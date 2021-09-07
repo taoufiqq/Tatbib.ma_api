@@ -48,7 +48,6 @@ const addPatient = async(req, res) => {
   const password = hashPassword;
   const login = req.body.login;
   const role = "Patient";
-  const status = "InValide";
   const verified = false;    
   const PatientPush = new Patient({
     firstName,
@@ -59,7 +58,6 @@ const addPatient = async(req, res) => {
     password, 
     login,  
     role,
-    status,
     verified
   });
   PatientPush

@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const nodemailer = require("nodemailer");
+const jwt_decode = require('jwt-decode');
 
 const Secretary = require('../models/Secretary.model');
 const RendezVous = require('../models/RendezVous.model');
@@ -19,31 +21,70 @@ const getAllSecretary= (req, res) => {
       };
 //_______________________ Secretary authentication________________________
 
-const addSecretary = (req, res) => {
+const addSecretary = async(req, res) => {
        
         bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
             if (err) {
               res.json({error : err})    
             }
-        const firstName = req.body.firstName;
-        const lastName = req.body.lastName;
+        const fullName = req.body.fullName;
         const email = req.body.email;
         const login = req.body.login;
         const password = hashPassword;
+        const status = "InActive";
+        const role = "Secretary";
+        const verified = false;  
         const SecretaryPush = new Secretary({
-          firstName,
-          lastName,
+          fullName,
           email,
           login,
-          password,  
+          password,
+          status,
+          role,
+          verified  
         });
         SecretaryPush
           .save()
-          .then(() => res.json("Secretary authentication successfully"))
+          .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your documments"))
           .catch((err) => res.status(400).json("Error :" + err));
       });
+     
+      // ----------------------send email validation -------------------------------   
+const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
+
+const transport = nodemailer.createTransport({
+  service: "gmail",
+      auth: {
+        user: 'elhanchaoui.emailtest@gmail.com',//email
+        pass: 'Taoufiq@2021'//password
       }
-      
+  })
+
+  await transport.sendMail({
+      from: 'elhanchaoui.emailtest@gmail.com',
+      to: req.body.email,
+      subject: "Email Activated Account",
+      html: `
+      <h2>Please click on below link to activate your account</h2>
+      <p>http://localhost:3000/secretary/activateCompte/${token}</p>
+  `
+  })
+}
+   //------------------------Medcine authentication---------------------
+   const activateCompteSecretary=  async(req, res) => {
+    const token = req.params.token;
+  
+    jwt.verify(token, 'tokenkey');
+  
+    let decoded = await jwt_decode(token);
+    let login = decoded.login;
+  
+     await Secretary.findOneAndUpdate({ login: login },{verified : true});
+  
+     res.json({
+             message : "ok"
+     });
+  }     
       //-------------------------login Secretary-----------------------------
       
       const loginSecretary= (req, res) => {
@@ -65,7 +106,9 @@ const addSecretary = (req, res) => {
               let token=jwt.sign({login :login},'tokenkey',(err,token) => {
                 res.cookie("token", token)  
                 res.json({
-                    token : token
+                    token : token,
+                    role:Secretary.role,
+                    verified:Secretary.verified
                 })
               })
            }
@@ -142,5 +185,5 @@ const updateRendezVous = (req, res) => {
 
 
 module.exports={
-  getAllSecretary,addSecretary,loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
+  getAllSecretary,addSecretary,activateCompteSecretary,loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
 };

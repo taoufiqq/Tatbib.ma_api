@@ -28,7 +28,15 @@ function verifyToken(req, res, next) {
       return next()
     }
 }
-
+exports.isSecretary = (req, res, next) => {
+  if(req.auth.role == 0){
+      return res.status(403).json({
+          error: "Secretary Ressource, Access Denied"
+      })
+  }else if(req.auth.role == "Secretary"){
+    return next()
+  }
+}
 exports.isPatient = (req, res, next) => {
     if(req.auth.role == 0){
         return res.status(403).json({

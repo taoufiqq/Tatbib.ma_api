@@ -5,6 +5,7 @@ const MedcineController = require('../controllers/Medcine.controller');
 
 
 router.post('/authentication',MedcineController.addMedcine);
+router.put('/activateCompte/:token', MedcineController.activateCompteMedcine);
 router.post('/login', MedcineController.loginMedcine);
 router.get('/logout', MedcineController.logout);
 router.get('/getAllMedcine',MedcineController.getAllMedcine);
