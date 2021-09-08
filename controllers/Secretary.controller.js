@@ -6,19 +6,7 @@ const jwt_decode = require('jwt-decode');
 const Secretary = require('../models/Secretary.model');
 const RendezVous = require('../models/RendezVous.model');
 
-//______________________get all Secretary 
-const getAllSecretary= (req, res) => {
-    Secretary.find()
-        .then(Secretary => {
-              res.status(200).json(Secretary);
-            }).catch(error => {
-              console.log(error);
-              res.status(500).json({
-                  message: "Error!",
-                  error: error
-              });
-            });
-      };
+
 //_______________________ Secretary authentication________________________
 
 const addSecretary = async(req, res) => {
@@ -50,41 +38,41 @@ const addSecretary = async(req, res) => {
       });
      
       // ----------------------send email validation -------------------------------   
-const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
+// const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
 
-const transport = nodemailer.createTransport({
-  service: "gmail",
-      auth: {
-        user: 'elhanchaoui.emailtest@gmail.com',//email
-        pass: 'Taoufiq@2021'//password
-      }
-  })
+// const transport = nodemailer.createTransport({
+//   service: "gmail",
+//       auth: {
+//         user: 'elhanchaoui.emailtest@gmail.com',//email
+//         pass: 'Taoufiq@2021'//password
+//       }
+//   })
 
-  await transport.sendMail({
-      from: 'elhanchaoui.emailtest@gmail.com',
-      to: req.body.email,
-      subject: "Email Activated Account",
-      html: `
-      <h2>Please click on below link to activate your account</h2>
-      <p>http://localhost:3000/secretary/activateCompte/${token}</p>
-  `
-  })
+//   await transport.sendMail({
+//       from: 'elhanchaoui.emailtest@gmail.com',
+//       to: req.body.email,
+//       subject: "Email Activated Account",
+//       html: `
+//       <h2>Please click on below link to activate your account</h2>
+//       <p>http://localhost:3000/secretary/activateCompte/${token}</p>
+//   `
+//   })
 }
    //------------------------Medcine authentication---------------------
-   const activateCompteSecretary=  async(req, res) => {
-    const token = req.params.token;
+  //  const activateCompteSecretary=  async(req, res) => {
+  //   const token = req.params.token;
   
-    jwt.verify(token, 'tokenkey');
+  //   jwt.verify(token, 'tokenkey');
   
-    let decoded = await jwt_decode(token);
-    let login = decoded.login;
+  //   let decoded = await jwt_decode(token);
+  //   let login = decoded.login;
   
-     await Secretary.findOneAndUpdate({ login: login },{verified : true});
+  //    await Secretary.findOneAndUpdate({ login: login },{verified : true});
   
-     res.json({
-             message : "ok"
-     });
-  }     
+  //    res.json({
+  //            message : "ok"
+  //    });
+  // }     
       //-------------------------login Secretary-----------------------------
       
       const loginSecretary= (req, res) => {
@@ -185,5 +173,5 @@ const updateRendezVous = (req, res) => {
 
 
 module.exports={
-  getAllSecretary,addSecretary,activateCompteSecretary,loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
+  addSecretary,loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
 };

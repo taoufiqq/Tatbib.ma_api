@@ -42,7 +42,12 @@ const Medcine = new Schema(
         type : Boolean,
         required : true,
         trim : true,
-    }
+    },
+    availablity : {
+        type : String,
+        required : true,
+        trim : true,
+    },
 },
  {
     versionKey: false

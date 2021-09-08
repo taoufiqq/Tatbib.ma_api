@@ -4,9 +4,10 @@ const nodemailer = require("nodemailer");
 const jwt_decode = require('jwt-decode');
 
 const Medcine = require('../models/Medcine.model');
+const Secretary = require('../models/Secretary.model');
 
 
-//______________________get all Medcine 
+//______________________get all Medcine____________________
 const getAllMedcine= (req, res) => {
   Medcine.find()
         .then(Medcine => {
@@ -19,6 +20,103 @@ const getAllMedcine= (req, res) => {
               });
             });
       };
+//______________________get all Secretary 
+const getAllSecretary= (req, res) => {
+  Secretary.find()
+      .then(Secretary => {
+            res.status(200).json(Secretary);
+          }).catch(error => {
+            console.log(error);
+            res.status(500).json({
+                message: "Error!",
+                error: error
+            });
+          });
+    };
+//______________________get Medcine By Id____________________
+ const getMedcineById = (req, res) => {
+        Medcine.findById(req.params.id)
+            .then(Medcine => {
+              res.status(200).json(Medcine);
+            }).catch(err => {
+                if(err.kind === 'ObjectId') {
+                    return res.status(404).send({
+                        message: "Medcine not found with id " + req.params.id,
+                        error: err
+                    });                
+                }
+                return res.status(500).send({
+                    message: "Error retrieving Medcine with id " + req.params.id,
+                    error: err
+                });
+            });
+      };
+//--------------------------get Secretary By Id--------------------------- 
+const getSecretaryById = (req, res) => {
+  Secretary.findById(req.params.id)
+      .then(Secretary => {
+        res.status(200).json(Secretary);
+      }).catch(err => {
+          if(err.kind === 'ObjectId') {
+              return res.status(404).send({
+                  message: "Secretary not found with id " + req.params.id,
+                  error: err
+              });                
+          }
+          return res.status(500).send({
+              message: "Error retrieving Secretary with id " + req.params.id,
+              error: err
+          });
+      });
+};
+
+
+
+
+ //________________________updating Availablity Medcine
+ const ActivateCompteSecretary = (req, res) => {
+  // Find Medcine By ID and update it
+  Secretary.updateOne(
+                   {_id: req.params.id},
+                    {
+                      status : req.body.status,
+                    }
+                  )
+  .then(() => res.status(201).json("availablity updated successfully"))
+  .catch((err) => res.status(400).json("Error :" + err));
+};
+ //________________________updating Secretary
+ const updateAvailablityMedcine = (req, res) => {
+  // Find Medcine By ID and update it
+  Medcine.updateOne(
+                   {_id: req.params.id},
+                    {
+                      availablity : req.body.availablity,
+                    }
+                  )
+  .then(() => res.status(201).json("availablity updated successfully"))
+  .catch((err) => res.status(400).json("Error :" + err));
+};
+ //______________________Delete Medcine _____________________ 
+     const deleteMedcine= (req, res) => {
+      const {id} = req.params;
+      Medcine.findOneAndDelete({_id: id})
+          .then(Medcine => {
+              if(!Medcine) {
+                res.status(404).json({
+                  message: "Does Not exist Medcine with id = " + id,
+                  error: "404",
+                });
+              }
+              res.status(200).json({});
+          }).catch(err => {
+              return res.status(500).send({
+                message: "Error -> Can NOT delete a Medcine with id = " + id,
+                error: err.message
+              });
+          });
+    };
+
 //_______________________ Medcine authentication________________________
 
 const addMedcine = async(req, res) => {
@@ -34,6 +132,7 @@ const addMedcine = async(req, res) => {
         const speciality = req.body.speciality;
         const city = req.body.city;
         const role = "Medcine";
+        const availablity = "available";
         const verified = false;  
         const MedcinePush = new Medcine({
           fullName,         
@@ -43,7 +142,8 @@ const addMedcine = async(req, res) => {
           speciality,  
           city,
           role,
-          verified
+          verified,
+          availablity
         });
         MedcinePush
           .save()
@@ -139,5 +239,5 @@ const transport = nodemailer.createTransport({
 
 
 module.exports={
-  getAllMedcine,addMedcine,activateCompteMedcine,loginMedcine,logout
+  getAllMedcine,getMedcineById,updateAvailablityMedcine,deleteMedcine,addMedcine,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary
 };
