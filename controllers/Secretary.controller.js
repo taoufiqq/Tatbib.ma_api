@@ -21,15 +21,13 @@ const addSecretary = async(req, res) => {
         const password = hashPassword;
         const status = "InActive";
         const role = "Secretary";
-        const verified = false;  
         const SecretaryPush = new Secretary({
           fullName,
           email,
           login,
           password,
           status,
-          role,
-          verified  
+          role
         });
         SecretaryPush
           .save()
@@ -37,45 +35,11 @@ const addSecretary = async(req, res) => {
           .catch((err) => res.status(400).json("Error :" + err));
       });
      
-      // ----------------------send email validation -------------------------------   
-// const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
-
-// const transport = nodemailer.createTransport({
-//   service: "gmail",
-//       auth: {
-//         user: 'elhanchaoui.emailtest@gmail.com',//email
-//         pass: 'Taoufiq@2021'//password
-//       }
-//   })
-
-//   await transport.sendMail({
-//       from: 'elhanchaoui.emailtest@gmail.com',
-//       to: req.body.email,
-//       subject: "Email Activated Account",
-//       html: `
-//       <h2>Please click on below link to activate your account</h2>
-//       <p>http://localhost:3000/secretary/activateCompte/${token}</p>
-//   `
-//   })
 }
-   //------------------------Medcine authentication---------------------
-  //  const activateCompteSecretary=  async(req, res) => {
-  //   const token = req.params.token;
-  
-  //   jwt.verify(token, 'tokenkey');
-  
-  //   let decoded = await jwt_decode(token);
-  //   let login = decoded.login;
-  
-  //    await Secretary.findOneAndUpdate({ login: login },{verified : true});
-  
-  //    res.json({
-  //            message : "ok"
-  //    });
-  // }     
-      //-------------------------login Secretary-----------------------------
+     
+//-------------------------login Secretary-----------------------------
       
-      const loginSecretary= (req, res) => {
+const loginSecretary= (req, res) => {
       
         let login=req.body.login;
         let password=req.body.password;
@@ -84,32 +48,59 @@ const addSecretary = async(req, res) => {
       .then(Secretary => {
       
       if(Secretary){
+
         bcrypt.compare(password, Secretary.password, function(err, result){
             if (err) {
                 res.json({
                   error : err
                 })
               }
-           if(result){
-              let token=jwt.sign({login :login},'tokenkey',(err,token) => {
-                res.cookie("token", token)  
-                res.json({
-                    token : token,
-                    role:Secretary.role,
-                    verified:Secretary.verified
-                })
+
+        if(result){
+
+  
+          if(Secretary.status == "InActive"){
+            res.json({
+              status: 'InActive'
               })
-           }
-           
-        })
-      }else{
-        res.json({
-            message : 'Secretary not found'
-        })
+        }
+        else if(Secretary.status == "Block"){
+          res.json({
+            status: 'Block'
+            })
       }
-      }).catch((err) => res.status(400).json("Error :" + err));
+        
+        
+        
+        else {
+          let token = jwt.sign({
+            login: login
+          }, 'tokenkey', (err, token) => {
+            res.cookie("token", token)
+            res.json({
+                 token : token,
+                 role:Secretary.role,
+                 status:Secretary.status,
+                 id:Secretary.id
+            })
+          
+        })
       }
 
+
+    }else {
+        res.json({
+          message: 'password incorrect try again !!'
+        })
+      }
+    })
+  } else {
+    res.json({
+      message: 'Admin not found'
+    })
+  }
+}).catch((err) => res.status(400).json("Error :" + err));
+}
  //-------------------------logout Secretary and remove token-----------------------------   
      const logout = (req, res) => {
         const deconnect = res.clearCookie("token")

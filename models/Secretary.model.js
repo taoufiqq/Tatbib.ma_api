@@ -33,11 +33,6 @@ const Secretary = new Schema(
         required : true,
         trim : true,
     },
-    verified : {
-        type : Boolean,
-        required : true,
-        trim : true,
-    }
 },
  {
     versionKey: false

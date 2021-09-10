@@ -73,7 +73,7 @@ const getSecretaryById = (req, res) => {
 
 
 
- //________________________updating Availablity Medcine
+ //________________________Activate Compte Secretary_________________
  const ActivateCompteSecretary = (req, res) => {
   // Find Medcine By ID and update it
   Secretary.updateOne(
@@ -82,10 +82,10 @@ const getSecretaryById = (req, res) => {
                       status : req.body.status,
                     }
                   )
-  .then(() => res.status(201).json("availablity updated successfully"))
+  .then(() => res.status(201).json("compte Activated  successfully"))
   .catch((err) => res.status(400).json("Error :" + err));
 };
- //________________________updating Secretary
+ //________________________updating Medcine___________________
  const updateAvailablityMedcine = (req, res) => {
   // Find Medcine By ID and update it
   Medcine.updateOne(
@@ -132,7 +132,7 @@ const addMedcine = async(req, res) => {
         const speciality = req.body.speciality;
         const city = req.body.city;
         const role = "Medcine";
-        const availablity = "available";
+        const availablity = "Available";
         const verified = false;  
         const MedcinePush = new Medcine({
           fullName,         
