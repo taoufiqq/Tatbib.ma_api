@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const Medcine = new Schema(
 {
+
     fullName: {
         type: String,
         required: true,

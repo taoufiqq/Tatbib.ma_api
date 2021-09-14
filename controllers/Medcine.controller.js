@@ -33,6 +33,25 @@ const getAllSecretary= (req, res) => {
             });
           });
     };
+    //______________________Delete Secretary 
+const deleteSecretary = (req, res) => {
+  const {id} = req.params;
+  Secretary.findOneAndDelete({_id: id})
+      .then(secretary => {
+          if(!secretary) {
+            res.status(404).json({
+              message: "Does Not exist a Secretary with id = ",
+              error: "404",
+            });
+          }
+          res.status(200).json({});
+      }).catch(err => {
+          return res.status(500).send({
+            message: "Error -> Can NOT delete a Secretary with id = ",
+            error: err.message
+          });
+      });
+};
 //______________________get Medcine By Id____________________
  const getMedcineById = (req, res) => {
         Medcine.findById(req.params.id)
@@ -69,13 +88,59 @@ const getSecretaryById = (req, res) => {
           });
       });
 };
+//________________________Get Secretary By NameMedcine ____________________
+const getSecretaryByMedcineName = (req, res) => {
+  Secretary.find({
+    loginMedcine: req.params.loginMedcine
+    })
+    .then(Secretary => {
+      res.send(Secretary);
+    }).catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving question."
+      });
+    });
+};
+//________________________ Add Compte Secretary _________________
+const addSecretary = async(req, res) => {
+
+  
+       
+  bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
+      if (err) {
+        res.json({error : err})    
+      }
+  const loginMedcine = req.body.loginMedcine;
+  const fullName = req.body.fullName;
+  const email = req.body.email;
+  const login = req.body.login;
+  const password = hashPassword;
+  const status = "InActive";
+  const roleSecretary = "Secretary";
+  const SecretaryPush = new Secretary({
+    fullName,
+    email,
+    login,
+    password,
+    status,
+    loginMedcine,
+    roleSecretary
+  });
+  SecretaryPush
+    .save()
+    .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your documments"))
+
+     
+    .catch((err) => res.status(400).json("Error :" + err));
 
 
+});
 
+}
 
  //________________________Activate Compte Secretary_________________
  const ActivateCompteSecretary = (req, res) => {
-  // Find Medcine By ID and update it
+  // Find Secretary By ID and update it
   Secretary.updateOne(
                    {_id: req.params.id},
                     {
@@ -86,7 +151,7 @@ const getSecretaryById = (req, res) => {
   .catch((err) => res.status(400).json("Error :" + err));
 };
  //________________________updating Medcine___________________
- const updateAvailablityMedcine = (req, res) => {
+ const UpdateAvailablityMedcine = (req, res) => {
   // Find Medcine By ID and update it
   Medcine.updateOne(
                    {_id: req.params.id},
@@ -207,12 +272,24 @@ const transport = nodemailer.createTransport({
                 })
               }
            if(result){
+
+
+          //   if(medcine.availablity == "NotAvailable"){
+          //     res.json({
+          //       availablity: 'NotAvailable'
+          //       })
+          // }
+
+
               let token=jwt.sign({login :login},'tokenkey',(err,token) => {
                 res.cookie("token", token)  
                 res.json({
                     token : token,
                     role:medcine.role,
-                    verified:medcine.verified
+                    verified:medcine.verified,
+                    id:medcine._id,
+                    medcine:medcine,
+                   
                 })
               })
            }
@@ -239,5 +316,5 @@ const transport = nodemailer.createTransport({
 
 
 module.exports={
-  getAllMedcine,getMedcineById,updateAvailablityMedcine,deleteMedcine,addMedcine,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary
+  getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary
 };

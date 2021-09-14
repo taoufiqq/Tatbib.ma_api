@@ -3,6 +3,15 @@ const Schema = mongoose.Schema;
 
 const Secretary = new Schema(
 {
+    id_medcine:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'Medcine'
+      },
+      loginMedcine: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     fullName: {
         type: String,
         required: true,
@@ -28,7 +37,7 @@ const Secretary = new Schema(
         required: true,
         trim: true,
     },
-    role : {
+    roleSecretary : {
         type : String,
         required : true,
         trim : true,

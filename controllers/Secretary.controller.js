@@ -9,33 +9,7 @@ const RendezVous = require('../models/RendezVous.model');
 
 //_______________________ Secretary authentication________________________
 
-const addSecretary = async(req, res) => {
-       
-        bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
-            if (err) {
-              res.json({error : err})    
-            }
-        const fullName = req.body.fullName;
-        const email = req.body.email;
-        const login = req.body.login;
-        const password = hashPassword;
-        const status = "InActive";
-        const role = "Secretary";
-        const SecretaryPush = new Secretary({
-          fullName,
-          email,
-          login,
-          password,
-          status,
-          role
-        });
-        SecretaryPush
-          .save()
-          .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your documments"))
-          .catch((err) => res.status(400).json("Error :" + err));
-      });
-     
-}
+
      
 //-------------------------login Secretary-----------------------------
       
@@ -73,13 +47,13 @@ const loginSecretary= (req, res) => {
         
         
         else {
-          let token = jwt.sign({
+          let tokenSecretary = jwt.sign({
             login: login
-          }, 'tokenkey', (err, token) => {
-            res.cookie("token", token)
+          }, 'tokenkey', (err, tokenSecretary) => {
+            res.cookie("tokenSecretary", tokenSecretary)
             res.json({
-                 token : token,
-                 role:Secretary.role,
+                 tokenSecretary : tokenSecretary,
+                 roleSecretary:Secretary.roleSecretary,
                  status:Secretary.status,
                  id:Secretary.id
             })
@@ -103,7 +77,7 @@ const loginSecretary= (req, res) => {
 }
  //-------------------------logout Secretary and remove token-----------------------------   
      const logout = (req, res) => {
-        const deconnect = res.clearCookie("token")
+        const deconnect = res.clearCookie("tokenPatient")
       
         res.json({
             message: 'Secretary is Signout !!'
@@ -164,5 +138,5 @@ const updateRendezVous = (req, res) => {
 
 
 module.exports={
-  addSecretary,loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
+   loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
 };

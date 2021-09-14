@@ -29,11 +29,11 @@ function verifyToken(req, res, next) {
     }
 }
 exports.isSecretary = (req, res, next) => {
-  if(req.auth.role == 0){
+  if(req.auth.roleSecretary == 0){
       return res.status(403).json({
           error: "Secretary Ressource, Access Denied"
       })
-  }else if(req.auth.role == "Secretary"){
+  }else if(req.auth.roleSecretary == "Secretary"){
     return next()
   }
 }
