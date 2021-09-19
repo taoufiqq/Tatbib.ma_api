@@ -183,13 +183,12 @@ const addSecretary = async(req, res) => {
     };
 
 //_______________________ Medcine authentication________________________
-
 const addMedcine = async(req, res) => {
-       
-        bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
-            if (err) {
-              res.json({error : err})    
-            }
+
+  bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
+      if (err) {
+        res.json({error : err})    
+      }
         const fullName = req.body.fullName;   
         const email = req.body.email;
         const login = req.body.login;
@@ -210,11 +209,11 @@ const addMedcine = async(req, res) => {
           verified,
           availablity
         });
-        MedcinePush
-          .save()
-          .then(() => res.json("Medcine authentication successfully"))
-          .catch((err) => res.status(400).json("Error :" + err));
-      });
+    MedcinePush
+    .save()
+    .then(() => res.json("Medcine authentication successfully"))
+    .catch((err) => res.status(400).json("Error :" + err));
+});
 
 // ----------------------send email validation -------------------------------   
 const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
@@ -236,7 +235,11 @@ const transport = nodemailer.createTransport({
       <p>http://localhost:3000/medcine/activateCompte/${token}</p>
   `
   })
+
+
 }
+
+
   //------------------------Medcine authentication---------------------
   const activateCompteMedcine=  async(req, res) => {
     const token = req.params.token;
@@ -272,15 +275,6 @@ const transport = nodemailer.createTransport({
                 })
               }
            if(result){
-
-
-          //   if(medcine.availablity == "NotAvailable"){
-          //     res.json({
-          //       availablity: 'NotAvailable'
-          //       })
-          // }
-
-
               let token=jwt.sign({login :login},'tokenkey',(err,token) => {
                 res.cookie("token", token)  
                 res.json({
@@ -312,9 +306,24 @@ const transport = nodemailer.createTransport({
         })
       }
       
+//________________________Get Medcine  By speciality ____________________
+const getMedcineBySpeciality = (req, res) => {
+     
+  // let speciality=req.params.speciality;
+  Medcine.find({
+    speciality:req.params.speciality
 
+    })
+    .then(Medcine => {
+      res.send(Medcine);
+    }).catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving question."
+      });
+    });
+};
 
 
 module.exports={
-  getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary
+  getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };

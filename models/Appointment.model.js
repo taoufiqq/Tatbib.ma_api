@@ -1,16 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const RendezVous = new Schema(
+const Appointment = new Schema(
 {
-    dateRendezVous: {
+    appointmentDate: {
         type: Date,
         required: true,
         trim: true,
     },
     status: {
         type: String,
-        default:"Unconfirmed",
         required: true,
         trim: true,
       
@@ -29,5 +28,5 @@ const RendezVous = new Schema(
 });
 
 
-const RendezVousList = mongoose.model("RendezVous",RendezVous);
-module.exports=RendezVousList;
+const AppointmentList = mongoose.model("Appointment",Appointment);
+module.exports=AppointmentList;

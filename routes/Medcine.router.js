@@ -13,6 +13,7 @@ router.get('/getAllSecretary',MedcineController.getAllSecretary);
 router.get('/getMedcineById/:id',MedcineController.getMedcineById);
 router.get('/getSecretaryById/:id',MedcineController.getSecretaryById);
 router.get('/getSecretaryByMedcineName/:loginMedcine',MedcineController.getSecretaryByMedcineName);
+router.get('/searchMedcine/:speciality',MedcineController.getMedcineBySpeciality);
 router.put('/activateCompte/:token', MedcineController.activateCompteMedcine);
 router.put('/updateAvailablityMedcine/:id',MedcineController.UpdateAvailablityMedcine);
 router.put('/activateCompteSecretary/:id',MedcineController.ActivateCompteSecretary);

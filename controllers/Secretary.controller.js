@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const jwt_decode = require('jwt-decode');
 
 const Secretary = require('../models/Secretary.model');
-const RendezVous = require('../models/RendezVous.model');
+const RendezVous = require('../models/Appointment.model');
 
 
 //_______________________ Secretary authentication________________________

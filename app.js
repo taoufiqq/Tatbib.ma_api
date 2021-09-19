@@ -47,11 +47,11 @@ mongoose.connect('mongodb://localhost:27017/Tatbib' , {
 const MedcineRoutes = require("./routes/Medcine.router");
 const PatientRoutes = require("./routes/Patient.router");
 const SecretaryRoutes = require("./routes/Secretary.router");
-const RendezVousRoutes = require("./routes/RendezVous.router");
+const AppointmentRoutes = require("./routes/Appointment.router");
 app.use('/medcine',MedcineRoutes);
 app.use('/patient',PatientRoutes);
 app.use('/secretary',SecretaryRoutes);
-app.use('/rendezVous',RendezVousRoutes);
+app.use('/appointment',AppointmentRoutes);
 
 
 
