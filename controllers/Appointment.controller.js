@@ -1,3 +1,4 @@
+const { populate } = require('../models/Appointment.model');
 const Appointment = require('../models/Appointment.model');
 
 
@@ -20,16 +21,21 @@ const getAllAppointment = (req, res) => {
 
 const addAppointment = (req,res) =>{
   
-  const appointmentDate= req.body.appointmentDate;
+
+  const date= req.body.date;
+  const time= req.body.time;
   const status = "Unconfirmed";
   const patient= req.body.patient;
   const medcine= req.body.medcine;
+  const loginMedcine= req.body.loginMedcine;
  
   const appointmentPush = new Appointment({
-        appointmentDate,
+        date,
+        time,
         status,
         patient,
-        medcine
+        medcine,
+        loginMedcine
 
    });
  //Save
@@ -40,9 +46,48 @@ const addAppointment = (req,res) =>{
  
  };
 
+  // -------------------------- get Appointment Patient --------------------------- 
+  const getAppointmentPatient = (req, res) => {
+          //  console.log(req.params.id);
+    Appointment.find({patient:req.params.id})
+        .populate('medcine')
+        .then(Appointment => {
+          res.status(200).json(Appointment);
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Appointment not found with id " + req.params.id,
+                    error: err
+                });                
+            }
+            return res.status(500).send({
+                message: "Error retrieving Appointment with id " + req.params.id,
+                error: err
+            });
+        });
+  };
 
+  // -------------------------- get Appointment Medcine --------------------------- 
+  const getAppointmentSecretary = (req, res) => {
 
-
+Appointment.find({loginMedcine:req.params.loginMedcine})
+  .populate('patient')
+  .populate('medcine')
+  .then(Appointment => {
+    res.status(200).json(Appointment);
+  }).catch(err => {
+      if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+              message: "Appointment not found with id " + req.params.id,
+              error: err
+          });                
+      }
+      return res.status(500).send({
+          message: "Error retrieving Appointment with id " + req.params.id,
+          error: err
+      });
+  });
+};
 
 
 
@@ -51,5 +96,5 @@ const addAppointment = (req,res) =>{
 
 
 module.exports={
-        getAllAppointment,addAppointment
+        getAllAppointment,addAppointment,getAppointmentPatient,getAppointmentSecretary
     };

@@ -3,7 +3,12 @@ const Schema = mongoose.Schema;
 
 const Appointment = new Schema(
 {
-    appointmentDate: {
+    date: {
+        type: Date,
+        required: true,
+        trim: true,
+    },
+    time: {
         type: Date,
         required: true,
         trim: true,
@@ -11,8 +16,12 @@ const Appointment = new Schema(
     status: {
         type: String,
         required: true,
-        trim: true,
-      
+        trim: true,     
+    },
+    loginMedcine: {
+        type: String,
+        required: true,
+        trim: true,     
     },
     patient :{
         type: mongoose.Schema.Types.ObjectId,

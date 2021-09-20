@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const jwt_decode = require('jwt-decode');
 
 const Secretary = require('../models/Secretary.model');
-const RendezVous = require('../models/Appointment.model');
+const Appointment = require('../models/Appointment.model');
 
 
 //_______________________ Secretary authentication________________________
@@ -55,7 +55,8 @@ const loginSecretary= (req, res) => {
                  tokenSecretary : tokenSecretary,
                  roleSecretary:Secretary.roleSecretary,
                  status:Secretary.status,
-                 id:Secretary.id
+                 id:Secretary.id,
+                 loginMedcine:Secretary.loginMedcine
             })
           
         })
@@ -83,54 +84,52 @@ const loginSecretary= (req, res) => {
             message: 'Secretary is Signout !!'
         })
       }
-      
-      const confirmerRendezVous = (req, res) => {
+ //________________________ updating Appointment ____________________     
+      const confirmAppointment = (req, res) => {
         // Find RendezVous By ID and update it
-        RendezVous.updateOne(
+        Appointment.updateOne(
                          {_id: req.params.id},
                           {
                             status : req.body.status,
                           }
                         )
-        .then(() => res.status(201).json("RendezVous updated successfully"))
+        .then(() => res.status(201).json("Appointment updated successfully"))
         .catch((err) => res.status(400).json("Error :" + err));
       };
-
-
-
-//________________________updating RendezVous ____________________
+//________________________updating Appointment ____________________
 
 
 
 
-const updateRendezVous = (req, res) => {
+const updateAppointment = (req, res) => {
   // Find RendezVous By ID and update it
-  RendezVous.updateOne(
+  Appointment.updateOne(
                    {_id: req.params.id},
                     {
-                      dateRendezVous : req.body.dateRendezVous,
+                      date : req.body.date,
+                      time : req.body.time,
                       status : req.body.status
                     }
                   )
-  .then(() => res.status(201).json("RendezVous updated successfully"))
+  .then(() => res.status(201).json("Appointment updated successfully"))
   .catch((err) => res.status(400).json("Error :" + err));
 };
- //-------------------------delete RendezVous-----------------------------   
+ //-------------------------delete Appointment-----------------------------   
 
- const deleteRendezVous = (req, res) => {
+ const deleteAppointment = (req, res) => {
   const {id} = req.params;
-  RendezVous.findOneAndDelete({_id: id})
-      .then(RendezVous => {
-          if(!RendezVous) {
+  Appointment.findOneAndDelete({_id: id})
+      .then(Appointment => {
+          if(!Appointment) {
             res.status(404).json({
-              message: "Does Not exist RendezVous with id = " + id,
+              message: "Does Not exist Appointment with id = " + id,
               error: "404",
             });
           }
           res.status(200).json({});
       }).catch(err => {
           return res.status(500).send({
-            message: "Error -> Can NOT delete a RendezVous with id = " + id,
+            message: "Error -> Can NOT delete a Appointment with id = " + id,
             error: err.message
           });
       });
@@ -138,5 +137,5 @@ const updateRendezVous = (req, res) => {
 
 
 module.exports={
-   loginSecretary,logout,confirmerRendezVous,updateRendezVous,deleteRendezVous
+   loginSecretary,logout,confirmAppointment,updateAppointment,deleteAppointment
 };

@@ -13,8 +13,6 @@ const Medcine = new Schema(
         type: String,
         required: true,
         trim: true,
-        index:false,
-        unique:false
     },
     login: {
         type: String,

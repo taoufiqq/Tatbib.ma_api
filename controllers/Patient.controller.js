@@ -1,4 +1,5 @@
 const Patient = require('../models/Patient.model');
+const Appointment = require('../models/Appointment.model')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
@@ -22,6 +23,7 @@ const getAllPatient = (req, res) => {
         });
       });
   };
+  
   //_______________________ Patient authentication________________________
 
 const addPatient = async(req, res) => {
