@@ -198,7 +198,7 @@ await transport.sendMail({
   line-height: 2;
   font-size: 22px;
   text-align: center; 
-  color:black;
+  color:red;
   ">
   <h2>Your appointment is near</h2>
   <h4>Please don't forget that </h4>

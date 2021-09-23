@@ -327,8 +327,8 @@ const getMedcineBySpeciality = (req, res) => {
  const addOrdonnance = async (req,res) =>{
   
 
-  const dateAppointment= req.body.date;
-  const timeAppointment= req.body.time;
+  const date= req.body.date;
+  const time= req.body.time;
   const medicamment= req.body.medicamment;
   const patient= req.body.patient;
   const medcine= req.body.medcine;
@@ -346,6 +346,60 @@ const getMedcineBySpeciality = (req, res) => {
    let result = await OrdonnancePush.save();
    res.send(result)      
 };
+const getAllOrdonnance = (req, res) => {
+  Ordonnance.find()
+        .then(OrdonnanceInfos => {
+          res.status(200).json(OrdonnanceInfos);
+        }).catch(error => {
+          console.log(error);
+          res.status(500).json({
+            message: "Error!",
+            error: error
+          });
+        });
+    };
+ // -------------------------- get Ordonnance By Medcine --------------------------- 
+ const getOrdonnanceByMedcine = (req, res) => {
+
+    Ordonnance.find({medcine:req.params.id})
+      .populate('patient')
+      .populate('medcine')
+      .then(Ordonnance => {
+        res.status(200).json(Ordonnance);
+      }).catch(err => {
+          if(err.kind === 'ObjectId') {
+              return res.status(404).send({
+                  message: "Ordonnance not found with id " + req.params.id,
+                  error: err
+              });                
+          }
+          return res.status(500).send({
+              message: "Error retrieving Ordonnance with id " + req.params.id,
+              error: err
+          });
+      });
+    };
+     // -------------------------- get Ordonnance By Patient --------------------------- 
+ const getOrdonnanceByPatient = (req, res) => {
+
+  Ordonnance.find({patient:req.params.id})
+    .populate('patient')
+    .populate('medcine')
+    .then(Ordonnance => {
+      res.status(200).json(Ordonnance);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Ordonnance not found with id " + req.params.id,
+                error: err
+            });                
+        }
+        return res.status(500).send({
+            message: "Error retrieving Ordonnance with id " + req.params.id,
+            error: err
+        });
+    });
+  };
 module.exports={
-  addOrdonnance,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
+  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };

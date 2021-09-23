@@ -1,18 +1,18 @@
 const Ordonnance = require('../models/Ordonnance.model');
 
 //_______________________ get All Ordonnance ________________________
-const getAllOrdonnance = (req, res) => {
-    Ordonnance.find()
-          .then(OrdonnanceInfos => {
-            res.status(200).json(OrdonnanceInfos);
-          }).catch(error => {
-            console.log(error);
-            res.status(500).json({
-              message: "Error!",
-              error: error
-            });
-          });
-      };
+// const getAllOrdonnance = (req, res) => {
+//     Ordonnance.find()
+//           .then(OrdonnanceInfos => {
+//             res.status(200).json(OrdonnanceInfos);
+//           }).catch(error => {
+//             console.log(error);
+//             res.status(500).json({
+//               message: "Error!",
+//               error: error
+//             });
+//           });
+//       };
 
  // -------------------------- get Ordonnance to Patient --------------------------- 
 //  const getOrdonnancePatient = (req, res) => {
@@ -37,7 +37,9 @@ const getAllOrdonnance = (req, res) => {
 //     };
 
 
+module.exports={
 
+};
 
 
 

@@ -48,11 +48,13 @@ const MedcineRoutes = require("./routes/Medcine.router");
 const PatientRoutes = require("./routes/Patient.router");
 const SecretaryRoutes = require("./routes/Secretary.router");
 const AppointmentRoutes = require("./routes/Appointment.router");
+const OrdonnanceRoutes = require("./routes/Ordonnance.router");
+
 app.use('/medcine',MedcineRoutes);
 app.use('/patient',PatientRoutes);
 app.use('/secretary',SecretaryRoutes);
 app.use('/appointment',AppointmentRoutes);
-
+app.use('/ordonnance',OrdonnanceRoutes);
 
 
 
