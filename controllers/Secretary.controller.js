@@ -5,7 +5,7 @@ const jwt_decode = require('jwt-decode');
 
 const Secretary = require('../models/Secretary.model');
 const Appointment = require('../models/Appointment.model');
-
+const Patient = require('../models/Patient.model');
 
 //_______________________ Secretary authentication________________________
 
@@ -85,17 +85,128 @@ const loginSecretary= (req, res) => {
         })
       }
  //________________________ updating Appointment ____________________     
-      const confirmAppointment = (req, res) => {
-        // Find RendezVous By ID and update it
+const confirmAppointment = async (req, res) => {
+        // Find Appointment By ID and update it
+
+        const {email} = req.body.email;
+        const {date} = req.body.date;
+        const {time} = req.body.time;
         Appointment.updateOne(
                          {_id: req.params.id},
                           {
                             status : req.body.status,
                           }
                         )
+        .populate('patient')
         .then(() => res.status(201).json("Appointment updated successfully"))
         .catch((err) => res.status(400).json("Error :" + err));
-      };
+        console.log(req.body.email);
+        // Patient.find(email)
+        // .then(Patient => {
+        //   res.status(200).json(Patient.email);
+        //   email = Patient.email;
+// ---------------------- send email Confirmation ------------------------------- 
+
+if (req.body.status === "Confirmed") {
+  const transport = nodemailer.createTransport({
+    service: "gmail",
+        auth: {
+          user: 'elhanchaoui.emailtest@gmail.com',//email
+          pass: 'Taoufiq@2021'//password
+        }
+    })
+  
+     await transport.sendMail({
+        from: 'elhanchaoui.emailtest@gmail.com',
+        to: req.body.email,
+        subject: "Email Confirmation Appointment",
+        html: `<div className="email" style="
+        border: 4px solid green;
+        padding: 20px;
+        font-family: sans-serif;
+        line-height: 2;
+        font-size: 20px;
+        text-align: center; 
+        color:green;
+        ">
+        <h2>Your appointment has been confirmed</h2>
+        <h4>please respect the schedule you have chosen </h4>
+        <h4>date: ${req.body.date}</h4>
+        <h4>time: ${req.body.time} </h4>
+    `
+    })
+  
+} else {
+  const transport = nodemailer.createTransport({
+    service: "gmail",
+        auth: {
+          user: 'elhanchaoui.emailtest@gmail.com',//email
+          pass: 'Taoufiq@2021'//password
+        }
+    })
+  
+     await transport.sendMail({
+        from: 'elhanchaoui.emailtest@gmail.com',
+        to: req.body.email,
+        subject: "Email UnConfirmed Appointment",
+        html: `
+        <div className="email" style="
+            border: 4px solid red;
+            padding: 20px;
+            font-family: sans-serif;
+            line-height: 2;
+            font-size: 20px;
+            text-align: center; 
+            color:red;
+            ">
+            <h2>Your appointment has been UnConfirmed</h2>
+            </h4>for more details please check your account</h4>
+    `
+    })
+}
+// })
+};
+ //________________________ updating Appointment ____________________     
+ const alertAppointment = async (req, res) => {
+  // Find Appointment By ID and update it
+
+  const {email} = req.body.email;
+  const {date} = req.body.date;
+  const {time} = req.body.time;
+  Appointment.findOne({_id: req.params.id})
+  .populate('patient')
+  .then(() => res.status(201).json("Appointment updated successfully"))
+  .catch((err) => res.status(400).json("Error :" + err));
+  console.log(req.body.email);
+// ---------------------- send email Confirmation ------------------------------- 
+const transport = nodemailer.createTransport({
+service: "gmail",
+  auth: {
+    user: 'elhanchaoui.emailtest@gmail.com',//email
+    pass: 'Taoufiq@2021'//password
+  }
+})
+
+await transport.sendMail({
+  from: 'elhanchaoui.emailtest@gmail.com',
+  to: req.body.email,
+  subject: "Appointment Reminder",
+  html: `<div className="email" style="
+  border: 4px solid orange;
+  padding: 20px;
+  font-family: sans-serif;
+  line-height: 2;
+  font-size: 22px;
+  text-align: center; 
+  color:black;
+  ">
+  <h2>Your appointment is near</h2>
+  <h4>Please don't forget that </h4>
+  <h4>date: ${req.body.date}</h4>
+  <h4>time: ${req.body.time} </h4>
+`
+})
+};
 //________________________updating Appointment ____________________
 
 
@@ -113,6 +224,7 @@ const updateAppointment = (req, res) => {
                   )
   .then(() => res.status(201).json("Appointment updated successfully"))
   .catch((err) => res.status(400).json("Error :" + err));
+
 };
  //-------------------------delete Appointment-----------------------------   
 
@@ -137,5 +249,5 @@ const updateAppointment = (req, res) => {
 
 
 module.exports={
-   loginSecretary,logout,confirmAppointment,updateAppointment,deleteAppointment
+   loginSecretary,logout,confirmAppointment,updateAppointment,deleteAppointment,alertAppointment
 };

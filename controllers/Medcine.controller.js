@@ -5,7 +5,7 @@ const jwt_decode = require('jwt-decode');
 
 const Medcine = require('../models/Medcine.model');
 const Secretary = require('../models/Secretary.model');
-
+const Ordonnance = require('../models/Ordonnance.model');
 
 //______________________get all Medcine____________________
 const getAllMedcine= (req, res) => {
@@ -323,7 +323,29 @@ const getMedcineBySpeciality = (req, res) => {
     });
 };
 
+ // -------------------------- add Ordonnance--------------------------- 
+ const addOrdonnance = async (req,res) =>{
+  
 
+  const dateAppointment= req.body.date;
+  const timeAppointment= req.body.time;
+  const medicamment= req.body.medicamment;
+  const patient= req.body.patient;
+  const medcine= req.body.medcine;
+  const appointment= req.body.appointment;
+ 
+  const OrdonnancePush = new Ordonnance({
+        date,
+        time,
+        medicamment,
+        patient,
+        medcine,
+        appointment
+
+   });
+   let result = await OrdonnancePush.save();
+   res.send(result)      
+};
 module.exports={
-  getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
+  addOrdonnance,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };

@@ -18,6 +18,7 @@ const Medcine = new Schema(
         type: String,
         required: true,
         trim: true,
+        
     },
     password: {
         type: String,

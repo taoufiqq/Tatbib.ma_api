@@ -16,10 +16,29 @@ const getAllAppointment = (req, res) => {
         });
     };
 
- 
+//--------------------------get Appointment By Id--------------------------- 
+const getAppointmentById = (req, res) => {
+  Appointment.findById(req.params.id)
+  .populate('medcine')
+  .populate('patient')
+      .then(Appointment => {
+        res.status(200).json(Appointment);
+      }).catch(err => {
+          if(err.kind === 'ObjectId') {
+              return res.status(404).send({
+                  message: "Appointment not found with id " + req.params.id,
+                  error: err
+              });                
+          }
+          return res.status(500).send({
+              message: "Error retrieving Appointment with id " + req.params.id,
+              error: err
+          });
+      });
+}; 
 // ----------------- add Appointment --------------------
 
-const addAppointment = (req,res) =>{
+const addAppointment = async (req,res) =>{
   
 
   const date= req.body.date;
@@ -38,11 +57,8 @@ const addAppointment = (req,res) =>{
         loginMedcine
 
    });
- //Save
- appointmentPush
- .save()
- .then(() => res.status(201).json("Appointment added successfully"))
- .catch((err) => res.status(400).json("Error :" + err));
+   let result = await appointmentPush.save();
+   res.send(result)
  
  };
 
@@ -51,6 +67,7 @@ const addAppointment = (req,res) =>{
           //  console.log(req.params.id);
     Appointment.find({patient:req.params.id})
         .populate('medcine')
+        .populate('patient')
         .then(Appointment => {
           res.status(200).json(Appointment);
         }).catch(err => {
@@ -66,8 +83,28 @@ const addAppointment = (req,res) =>{
             });
         });
   };
-
   // -------------------------- get Appointment Medcine --------------------------- 
+  const getAppointmentMedcine = (req, res) => {
+    //  console.log(req.params.id);
+Appointment.find({medcine:req.params.id})
+  .populate('patient')
+  .then(Appointment => {
+    res.status(200).json(Appointment);
+  }).catch(err => {
+      if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+              message: "Appointment not found with id " + req.params.id,
+              error: err
+          });                
+      }
+      return res.status(500).send({
+          message: "Error retrieving Appointment with id " + req.params.id,
+          error: err
+      });
+  });
+};
+
+  // -------------------------- get Appointment to Secretary --------------------------- 
   const getAppointmentSecretary = (req, res) => {
 
 Appointment.find({loginMedcine:req.params.loginMedcine})
@@ -96,5 +133,5 @@ Appointment.find({loginMedcine:req.params.loginMedcine})
 
 
 module.exports={
-        getAllAppointment,addAppointment,getAppointmentPatient,getAppointmentSecretary
+        getAllAppointment,addAppointment,getAppointmentPatient,getAppointmentSecretary,getAppointmentById,getAppointmentMedcine
     };
