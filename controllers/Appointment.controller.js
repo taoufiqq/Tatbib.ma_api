@@ -4,7 +4,8 @@ const Appointment = require('../models/Appointment.model');
 
 //_______________________ get All Appointment ________________________
 const getAllAppointment = (req, res) => {
-  Appointment.find()
+
+  Appointment.findOne()
         .then(AppointmentInfos => {
           res.status(200).json(AppointmentInfos);
         }).catch(error => {
@@ -41,16 +42,29 @@ const getAppointmentById = (req, res) => {
 const addAppointment = async (req,res) =>{
   
 
-  const date= req.body.date;
-  const time= req.body.time;
+  const dateTime= req.body.dateTime;
+
   const status = "Unconfirmed";
   const patient= req.body.patient;
   const medcine= req.body.medcine;
   const loginMedcine= req.body.loginMedcine;
- 
+
+  const existingAppointment = await Appointment.findOne({ medcine : medcine , dateTime: dateTime });
+
+  console.log("******************************************************************");
+  console.log(existingAppointment);
+  console.log("******************************************************************");
+
+  if (existingAppointment) {
+  
+    return res.json({
+      error: true,
+    });
+
+  
+  }
   const appointmentPush = new Appointment({
-        date,
-        time,
+        dateTime,
         status,
         patient,
         medcine,

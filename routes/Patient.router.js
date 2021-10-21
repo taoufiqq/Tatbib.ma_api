@@ -11,5 +11,6 @@ router.get('/logout', PatientController.logout);
 router.get('/getPatientById/:id', PatientController.getPatientById);
 router.get('/getAllPatient',PatientController.getAllPatient);
 router.delete('/deletePatient/:id',PatientController.deletePatient);
+router.delete('/deleteAppointment/:id',PatientController.deleteAppointment);
 
 module.exports = router;

@@ -327,16 +327,14 @@ const getMedcineBySpeciality = (req, res) => {
  const addOrdonnance = async (req,res) =>{
   
 
-  const date= req.body.date;
-  const time= req.body.time;
+  const dateTime= req.body.dateTime;
   const medicamment= req.body.medicamment;
   const patient= req.body.patient;
   const medcine= req.body.medcine;
   const appointment= req.body.appointment;
  
   const OrdonnancePush = new Ordonnance({
-        date,
-        time,
+        dateTime,
         medicamment,
         patient,
         medcine,

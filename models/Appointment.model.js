@@ -3,12 +3,7 @@ const Schema = mongoose.Schema;
 
 const Appointment = new Schema(
 {
-    date: {
-        type: Date,
-        required: true,
-        trim: true,
-    },
-    time: {
+    dateTime: {
         type: Date,
         required: true,
         trim: true,

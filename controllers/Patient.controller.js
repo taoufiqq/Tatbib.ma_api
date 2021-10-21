@@ -205,6 +205,25 @@ const deletePatient = (req, res) => {
           });
       });
 };
+//______________________Delete Appointment ___________________________________ 
+const deleteAppointment = (req, res) => {
+  const {id} = req.params;
+  Appointment.findOneAndDelete({_id: id})
+      .then(Appointment => {
+          if(!Appointment) {
+            res.status(404).json({
+              message: "Does Not exist a Appointment with id = ",
+              error: "404",
+            });
+          }
+          res.status(200).json({});
+      }).catch(err => {
+          return res.status(500).send({
+            message: "Error -> Can NOT delete a Appointment with id = ",
+            error: err.message
+          });
+      });
+};
 
 
   //-------------------------logout Patient and remove token-----------------------------   
@@ -216,5 +235,5 @@ const deletePatient = (req, res) => {
     })
   }
   module.exports={
-    getAllPatient,addPatient,activateComptePatient,loginPatient,updatePatient,getPatientById,deletePatient,logout
+    getAllPatient,addPatient,activateComptePatient,loginPatient,updatePatient,getPatientById,deletePatient,logout,deleteAppointment
 };

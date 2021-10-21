@@ -89,8 +89,8 @@ const confirmAppointment = async (req, res) => {
         // Find Appointment By ID and update it
 
         const {email} = req.body.email;
-        const {date} = req.body.date;
-        const {time} = req.body.time;
+        const {dateTime} = req.body.dateTime;
+   
         Appointment.updateOne(
                          {_id: req.params.id},
                           {
@@ -131,8 +131,8 @@ if (req.body.status === "Confirmed") {
         ">
         <h2>Your appointment has been confirmed</h2>
         <h4>please respect the schedule you have chosen </h4>
-        <h4>date: ${req.body.date}</h4>
-        <h4>time: ${req.body.time} </h4>
+        <h4>date && time: ${req.body.dateTime}</h4>
+ 
     `
     })
   
@@ -171,8 +171,7 @@ if (req.body.status === "Confirmed") {
   // Find Appointment By ID and update it
 
   const {email} = req.body.email;
-  const {date} = req.body.date;
-  const {time} = req.body.time;
+  const {dateTime} = req.body.dateTime;
   Appointment.findOne({_id: req.params.id})
   .populate('patient')
   .then(() => res.status(201).json("Appointment updated successfully"))
@@ -202,8 +201,7 @@ await transport.sendMail({
   ">
   <h2>Your appointment is near</h2>
   <h4>Please don't forget that </h4>
-  <h4>date: ${req.body.date}</h4>
-  <h4>time: ${req.body.time} </h4>
+  <h4>date && time: ${req.body.dateTime}</h4>
 `
 })
 };
@@ -217,8 +215,7 @@ const updateAppointment = (req, res) => {
   Appointment.updateOne(
                    {_id: req.params.id},
                     {
-                      date : req.body.date,
-                      time : req.body.time,
+                      dateTime : req.body.dateTime,
                       status : req.body.status
                     }
                   )
