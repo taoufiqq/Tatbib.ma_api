@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 
 
-mongoose.connect('mongodb://localhost:27017/Tatbib' , {
+mongoose.connect('mongodb+srv://tatbib:Alsa2018el@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
   useNewUrlParser: true
 }).then(() => {
   logger.info("Successfully connected to the database");    
