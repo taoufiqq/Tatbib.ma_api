@@ -85,7 +85,7 @@ const transport = nodemailer.createTransport({
       subject: "Email Activated Account",
       html: `
       <h2>Please click on below link to activate your account</h2>
-      <p>http://localhost:3030/patient/activateCompte/${token}</p>
+      <p>https://app-tatbib.herokuapp.com/patient/activateCompte/${token}</p>
   `
   })
 
