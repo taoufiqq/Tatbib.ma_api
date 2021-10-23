@@ -11,7 +11,9 @@ const logger = require('./config/logger')
 
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ['https://tatbib-api.herokuapp.com']
+}));
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 // parse requests of content-type - application/json
