@@ -232,7 +232,7 @@ const transport = nodemailer.createTransport({
       subject: "Email Activated Account",
       html: `
       <h2>Please click on below link to activate your account</h2>
-      <p>https://tatbib-api.herokuapp.com/medcine/activateCompte/${token}</p>
+      <p>https://app-tatbib.herokuapp.com/medcine/activateCompte/${token}</p>
   `
   })
 
