@@ -11,7 +11,7 @@ const logger = require('./config/logger')
 
 app.use(
   cors({
-    origin: ['https://app-tatbib.herokuapp.com'],
+    origin: ['https://app-tatbib.herokuapp.com','https://tatbib.vercel.app'],
     credentials: true,
   })
 );
