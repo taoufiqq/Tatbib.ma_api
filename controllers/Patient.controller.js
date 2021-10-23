@@ -74,18 +74,18 @@ const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenke
 const transport = nodemailer.createTransport({
   service: "gmail",
       auth: {
-        user: 'elhanchaoui.emailtest@gmail.com',//email
-        pass: 'Taoufiq@2021'//password
+        user: 'app.tatbib@gmail.com',//email
+        pass: 'tatbib123'//password
       }
   })
 
   await transport.sendMail({
-      from: 'elhanchaoui.emailtest@gmail.com',
+      from: 'app.tatbib@gmail.com',
       to: req.body.email,
       subject: "Email Activated Account",
       html: `
       <h2>Please click on below link to activate your account</h2>
-      <p>https://tatbib-api.herokuapp.com/patient/activateCompte/${token}</p>
+      <p>http://localhost:3030/patient/activateCompte/${token}</p>
   `
   })
 

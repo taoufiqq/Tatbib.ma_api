@@ -854,3 +854,5 @@
 {"message":"Successfully connected to the database","level":"info","service":"user-service","timestamp":"2021-10-21T22:17:37.935Z"}
 {"message":"Successfully connected to the database","level":"info","service":"user-service","timestamp":"2021-10-21T22:28:04.295Z"}
 {"message":"Successfully connected to the database","level":"info","service":"user-service","timestamp":"2021-10-21T22:28:27.242Z"}
+{"message":"Successfully connected to the database","level":"info","service":"user-service","timestamp":"2021-10-23T16:11:42.941Z"}
+{"message":"Successfully connected to the database","level":"info","service":"user-service","timestamp":"2021-10-23T16:30:23.210Z"}
