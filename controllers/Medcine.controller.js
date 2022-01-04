@@ -221,13 +221,13 @@ const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenke
 const transport = nodemailer.createTransport({
   service: "gmail",
       auth: {
-        user: 'app.tatbib@gmail.com',//email
-        pass: 'tatbib123'//password
+        user: 'tatbib34@gmail.com',//email
+        pass: 'youcode2020'//password
       }
   })
 
   await transport.sendMail({
-      from: 'app.tatbib@gmail.com',
+      from: 'tatbib34@gmail.com',
       to: req.body.email,
       subject: "Email Activated Account",
       html: `

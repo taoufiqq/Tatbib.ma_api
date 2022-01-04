@@ -111,13 +111,13 @@ if (req.body.status === "Confirmed") {
   const transport = nodemailer.createTransport({
     service: "gmail",
         auth: {
-          user: 'app.tatbib@gmail.com',//email
-          pass: 'tatbib123'//password
+          user: 'tatbib34@gmail.com',//email
+          pass: 'youcode2020'//password
         }
     })
   
      await transport.sendMail({
-        from: 'app.tatbib@gmail.com',
+        from: 'tatbib34@gmail.com',
         to: req.body.email,
         subject: "Email Confirmation Appointment",
         html: `<div className="email" style="
@@ -140,13 +140,13 @@ if (req.body.status === "Confirmed") {
   const transport = nodemailer.createTransport({
     service: "gmail",
         auth: {
-          user: 'app.tatbib@gmail.com',//email
-          pass: 'tatbib123'//password
+          user: 'tatbib34@gmail.com',//email
+          pass: 'youcode2020'//password
         }
     })
   
      await transport.sendMail({
-        from: 'app.tatbib@gmail.com',
+        from: 'tatbib34@gmail.com',
         to: req.body.email,
         subject: "Email UnConfirmed Appointment",
         html: `
@@ -181,13 +181,13 @@ if (req.body.status === "Confirmed") {
 const transport = nodemailer.createTransport({
 service: "gmail",
   auth: {
-    user: 'app.tatbib@gmail.com',//email
-    pass: 'tatbib123'//password
+    user: 'tatbib34@gmail.com',//email
+    pass: 'youcode2020'//password
   }
 })
 
 await transport.sendMail({
-  from: 'app.tatbib@gmail.com',
+  from: 'tatbib34@gmail.com',
   to: req.body.email,
   subject: "Appointment Reminder",
   html: `<div className="email" style="
