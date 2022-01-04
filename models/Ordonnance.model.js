@@ -3,16 +3,7 @@ const Schema = mongoose.Schema;
 
 const Ordonnance = new Schema(
 {
-    date: {
-        type: Date,
-        required: true,
-        trim: true,
-    },
-    time: {
-        type: Date,
-        required: true,
-        trim: true,
-    },
+
     medicamment: {
         type: String,
         required: true,
