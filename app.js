@@ -9,12 +9,12 @@ var bodyParser = require('body-parser');
 const port = process.env.PORT || 3030;
 const logger = require('./config/logger')
 
-app.use(
-  cors({
-    origin: ['https://app-tatbib.herokuapp.com','https://tatbib.vercel.app'],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ['https://app-tatbib.herokuapp.com','https://tatbib.vercel.app'],
+//     credentials: true,
+//   })
+// );
 
 
 // parse requests of content-type - application/x-www-form-urlencoded
