@@ -23,6 +23,7 @@ const logger = winston.createLogger({
         }),
     new winston.transports.MongoDB(
           { 
+               tryReconnect: true,
                db :'mongodb://localhost:27017/Tatbib',
                option : { useUnifiedTopology: true } 
           }),
