@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb+srv://tatbib:Alsa2018el@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
   useNewUrlParser: true
+  useUnifiedTopology: true
 }).then(() => {
   logger.info("Successfully connected to the database");    
 }).catch(err => {
