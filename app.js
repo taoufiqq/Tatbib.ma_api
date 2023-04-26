@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 
 const port = process.env.PORT || 3030;
-const logger = require('./config/logger')
+// const logger = require('./config/logger')
 
 // app.use(
 //   cors({
@@ -29,10 +29,12 @@ mongoose.connect('mongodb+srv://tatbib:Alsa2018el@cluster0.fkjkw.mongodb.net/Tat
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
-  logger.info("Successfully connected to the database");    
+//   logger.info("Successfully connected to the database");    
+  console.log("Successfully connected to the database")
 }).catch(err => {
-  logWinston.error('Could not connect to the database. Exiting now...', err);
-  logger.exit();
+//   logWinston.error('Could not connect to the database. Exiting now...', err);
+//   logger.exit();
+  console.log("ERROR database",err)
 });
 
 
