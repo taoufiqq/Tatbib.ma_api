@@ -25,18 +25,22 @@ app.use(bodyParser.json());
 
 
 
-mongoose.connect('mongodb+srv://tatbib:Alsa2018el@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-//   logger.info("Successfully connected to the database");    
-  console.log("Successfully connected to the database")
-}).catch(err => {
-//   logWinston.error('Could not connect to the database. Exiting now...', err);
-//   logger.exit();
-  console.log("ERROR database",err)
-});
+// mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// }).then(() => {
+// //   logger.info("Successfully connected to the database");    
+//   console.log("Successfully connected to the database")
+// }).catch(err => {
+// //   logWinston.error('Could not connect to the database. Exiting now...', err);
+// //   logger.exit();
+//   console.log("ERROR database",err)
+// });
+mongoose.connect("mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority'",{useNewUrlParser:true,useUnifiedTopology: true});
 
+mongoose.connection.on("connected",()=>{
+console.log("Mongoose connected");
+})
 
 
 

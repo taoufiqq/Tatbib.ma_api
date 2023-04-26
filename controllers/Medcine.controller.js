@@ -216,25 +216,25 @@ const addMedcine = async(req, res) => {
 });
 
 // ----------------------send email validation -------------------------------   
-const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
+// const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
 
-const transport = nodemailer.createTransport({
-  service: "gmail",
-      auth: {
-        user: 'tatbib34@gmail.com',//email
-        pass: 'youcode2020'//password
-      }
-  })
+// const transport = nodemailer.createTransport({
+//   service: "gmail",
+//       auth: {
+//         user: 'tatbib34@gmail.com',//email
+//         pass: 'youcode2020'//password
+//       }
+//   })
 
-  await transport.sendMail({
-      from: 'tatbib34@gmail.com',
-      to: req.body.email,
-      subject: "Email Activated Account",
-      html: `
-      <h2>Please click on below link to activate your account</h2>
-      <p>https://tatbib.vercel.app/medcine/activateCompte/${token}</p>
-  `
-  })
+//   await transport.sendMail({
+//       from: 'tatbib34@gmail.com',
+//       to: req.body.email,
+//       subject: "Email Activated Account",
+//       html: `
+//       <h2>Please click on below link to activate your account</h2>
+//       <p>https://tatbib.vercel.app/medcine/activateCompte/${token}</p>
+//   `
+//   })
 
 
 }
