@@ -40,11 +40,11 @@ const Medcine = new Schema(
         required : true,
         trim : true,
     },
-    verified : {
-        type : Boolean,
-        required : true,
-        trim : true,
-    },
+    // verified : {
+    //     type : Boolean,
+    //     required : true,
+    //     trim : true,
+    // },
     availablity : {
         type : String,
         required : true,

@@ -197,7 +197,6 @@ const addMedcine = async(req, res) => {
         const city = req.body.city;
         const role = "Medcine";
         const availablity = "Available";
-        const verified = false;  
         const MedcinePush = new Medcine({
           fullName,         
           email,
@@ -206,7 +205,6 @@ const addMedcine = async(req, res) => {
           speciality,  
           city,
           role,
-          verified,
           availablity
         });
     MedcinePush
@@ -216,45 +214,45 @@ const addMedcine = async(req, res) => {
 });
 
 // ----------------------send email validation -------------------------------   
-const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
+// const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
 
-const transport = nodemailer.createTransport({
-  service: "gmail",
-      auth: {
-        user: 'tatbib34@gmail.com',//email
-        pass: 'youcode2020'//password
-      }
-  })
+// const transport = nodemailer.createTransport({
+//   service: "gmail",
+//       auth: {
+//         user: 'tatbib34@gmail.com',//email
+//         pass: 'youcode2020'//password
+//       }
+//   })
 
-  await transport.sendMail({
-      from: 'tatbib34@gmail.com',
-      to: req.body.email,
-      subject: "Email Activated Account",
-      html: `
-      <h2>Please click on below link to activate your account</h2>
-      <p>https://tatbib.vercel.app/medcine/activateCompte/${token}</p>
-  `
-  })
+//   await transport.sendMail({
+//       from: 'tatbib34@gmail.com',
+//       to: req.body.email,
+//       subject: "Email Activated Account",
+//       html: `
+//       <h2>Please click on below link to activate your account</h2>
+//       <p>https://tatbib.vercel.app/medcine/activateCompte/${token}</p>
+//   `
+//   })
 
 
 }
 
 
   //------------------------Medcine authentication---------------------
-  const activateCompteMedcine=  async(req, res) => {
-    const token = req.params.token;
+  // const activateCompteMedcine=  async(req, res) => {
+  //   const token = req.params.token;
   
-    jwt.verify(token, 'tokenkey');
+  //   jwt.verify(token, 'tokenkey');
   
-    let decoded = await jwt_decode(token);
-    let login = decoded.login;
+  //   let decoded = await jwt_decode(token);
+  //   let login = decoded.login;
   
-     await Medcine.findOneAndUpdate({ login: login },{verified : true});
+  //    await Medcine.findOneAndUpdate({ login: login },{verified : true});
   
-     res.json({
-             message : "ok"
-     });
-  }
+  //    res.json({
+  //            message : "ok"
+  //    });
+  // }
   
       
       //-------------------------login Medcine-----------------------------
@@ -280,13 +278,17 @@ const transport = nodemailer.createTransport({
                 res.json({
                     token : token,
                     role:medcine.role,
-                    verified:medcine.verified,
                     id:medcine._id,
                     medcine:medcine,
                    
                 })
               })
            }
+           else {
+            res.json({
+              message: 'password incorrect try again !!'
+            })
+          }
            
         })
       }else{
@@ -399,5 +401,5 @@ const getAllOrdonnance = (req, res) => {
     });
   };
 module.exports={
-  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,activateCompteMedcine,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
+  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };
