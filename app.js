@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 // //   logger.exit();
 //   console.log("ERROR database",err)
 // });
-mongoose.connect("mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority'",{useNewUrlParser:true,useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority;",{useNewUrlParser:true,useUnifiedTopology: true});
 
 mongoose.connection.on("connected",()=>{
 console.log("Mongoose connected");

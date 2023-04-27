@@ -5,7 +5,7 @@ const PatientController = require('../controllers/Patient.controller');
 
 router.post('/authentication', PatientController.addPatient)
 router.post('/login', PatientController.loginPatient);
-router.put('/activateCompte/:token', PatientController.activateComptePatient)
+// router.put('/activateCompte/:token', PatientController.activateComptePatient)
 router.put('/updatePatient/:id', PatientController.updatePatient)
 router.get('/logout', PatientController.logout);
 router.get('/getPatientById/:id', PatientController.getPatientById);

@@ -42,12 +42,13 @@ const Patient = new Schema(
         type : String,
         required : true,
         trim : true,
-    },
-    verified : {
-        type : Boolean,
-        required : true,
-        trim : true,
     }
+    // ,
+    // verified : {
+    //     type : Boolean,
+    //     required : true,
+    //     trim : true,
+    // }
 },
  {
     versionKey: false

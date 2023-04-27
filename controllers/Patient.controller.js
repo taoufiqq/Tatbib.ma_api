@@ -24,86 +24,39 @@ const getAllPatient = (req, res) => {
 //_______________________ Patient authentication________________________
 
 const addPatient = async (req, res) => {
-  // const existingPatient = await Patient.findOne({ email: req.body.email });
+  bcrypt.hash(req.body.password, 10, function (err, hashPassword) {
+    if (err) {
+        res.json({
+            error: err
+        })
+    }
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const age = req.body.age;
+    const telephone = req.body.telephone;
+    const email = req.body.email;
+    const password = hashPassword;
+    const login = req.body.login;
+    const role = "Patient";
 
-  // if (existingPatient) {
-  //   console.log("An account whit this email exist");
-  //   return res.json({
-  //     error: error,
-  //   });
-  // }
-
-
-  const hashPassword = await bcrypt.hash(req.body.password, 10);
-
-
-
-
-  try {
-    const patient = new Patient({
-      ...req.body,
-      password: hashPassword,
-      role: "Patient",
-      verified: "false",
+    const PatientPush = new Patient({
+      firstName,
+      lastName,
+      age,
+      telephone,
+      email,
+      password,
+      login,
+      role,
+        
     });
+    PatientPush
+    
+        .save()
+        .then(() => res.json("Patient authentication successfully"))
+        .catch((err) => res.status(400).json("Error :" + err));
+});
 
-    console.log(patient);
-    await patient.save();
-    res.json("Patient authentication successfully")
-  } catch (error) {
-    res.status(500).send(error);
-  }
-
-  // app.post("/food", async (request, res) => {
-  //   const food = new foodModel(request.body);
-
-  //   try {
-  //     await food.save();
-  //     res.send(food);
-  //   } catch (error) {
-  //     res.status(500).send(error);
-  //   }
-  // });
-
-  // const existingPatient = await Patient.findOne({email : req.body.email});
-
-  // if (existingPatient) {
-
-  //         console.log('An account whit this email exist');
-  //         return res.json({
-  //                 error : error
-  //         })
-  // }
-
-  //   bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
-  //       if (err) {
-  //         res.json({error : err})
-  //       }
-  //   const firstName = req.body.firstName;
-  //   const lastName = req.body.lastName;
-  //   const age = req.body.age;
-  //   const telephone = req.body.telephone;
-  //   const email = req.body.email;
-  //   const password = hashPassword;
-  //   const login = req.body.login;
-  //   const role = "Patient";
-  //   const verified = false;
-  //   const PatientPush = new Patient({
-  //     firstName,
-  //     lastName,
-  //     age,
-  //     telephone,
-  //     email,
-  //     password,
-  //     login,
-  //     role,
-  //     verified
-  //   });
-  //   PatientPush
-  //     .save()
-  //     .then(() => res.json("Patient authentication successfully"))
-  //     .catch((err) => res.status(400).json("Error :" + err));
-  // });
 
   // ----------------------send email validation -------------------------------
   // const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
@@ -127,24 +80,24 @@ const addPatient = async (req, res) => {
   //   })
 };
 //------------------------Patient authentication---------------------
-const activateComptePatient = async (req, res) => {
-  const token = req.params.token;
+// const activateComptePatient = async (req, res) => {
+//   const token = req.params.token;
 
-  jwt.verify(token, "tokenkey");
+//   jwt.verify(token, "tokenkey");
 
-  let decoded = await jwt_decode(token);
-  let login = decoded.login;
+//   let decoded = await jwt_decode(token);
+//   let login = decoded.login;
 
-  await Patient.findOneAndUpdate({
-    login: login
-  }, {
-    verified: true
-  });
+//   await Patient.findOneAndUpdate({
+//     login: login
+//   }, {
+//     verified: true
+//   });
 
-  res.json({
-    message: "ok",
-  });
-};
+//   res.json({
+//     message: "ok",
+//   });
+// };
 
 //-------------------------login Admin-----------------------------
 
@@ -173,12 +126,16 @@ const loginPatient = (req, res) => {
                 res.json({
                   token: token,
                   role: patient.role,
-                  verified: patient.verified,
                   patient: patient,
                   id: patient._id,
                 });
               }
             );
+          }
+          else {
+            res.json({
+              message: 'password incorrect try again !!'
+            })
           }
         });
       } else {
@@ -286,7 +243,7 @@ const logout = (req, res) => {
 module.exports = {
   getAllPatient,
   addPatient,
-  activateComptePatient,
+  // activateComptePatient,
   loginPatient,
   updatePatient,
   getPatientById,
