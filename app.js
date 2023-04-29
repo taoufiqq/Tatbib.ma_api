@@ -9,12 +9,19 @@ var bodyParser = require('body-parser');
 const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
-app.use(
-  cors({
-    origin: ['https://tatbib-api.onrender.com','https://tatbib.vercel.app'],
-    credentials: true,
-  })
-);
+const corsOptions ={
+  origin:'https://tatbib-api.onrender.com', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+
+// app.use(
+//   cors({
+//     origin: ['https://tatbib-api.onrender.com','https://tatbib.vercel.app'],
+//     credentials: true,
+//   })
+// );
 
 
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -36,8 +43,10 @@ app.use(bodyParser.json());
 // //   logger.exit();
 //   console.log("ERROR database",err)
 // });
-mongoose.connect("mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority;",{useNewUrlParser:true,useUnifiedTopology: true});
-
+mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority;',{
+  useNewUrlParser:true,
+  useUnifiedTopology: true
+});
 mongoose.connection.on("connected",()=>{
 console.log("Mongoose connected");
 })

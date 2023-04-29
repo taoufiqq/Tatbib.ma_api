@@ -128,7 +128,7 @@ const addSecretary = async(req, res) => {
   });
   SecretaryPush
     .save()
-    .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your documments"))
+    .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your Compte"))
 
      
     .catch((err) => res.status(400).json("Error :" + err));
