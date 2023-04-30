@@ -197,6 +197,7 @@ const addMedcine = async(req, res) => {
         const city = req.body.city;
         const role = "Medcine";
         const availablity = "Available";
+        // const verified = false;  
         const MedcinePush = new Medcine({
           fullName,         
           email,
@@ -205,6 +206,7 @@ const addMedcine = async(req, res) => {
           speciality,  
           city,
           role,
+          // verified,
           availablity
         });
     MedcinePush
@@ -212,7 +214,6 @@ const addMedcine = async(req, res) => {
     .then(() => res.json("Medcine authentication successfully"))
     .catch((err) => res.status(400).json("Error :" + err));
 });
-
 // ----------------------send email validation -------------------------------   
 // const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
 
