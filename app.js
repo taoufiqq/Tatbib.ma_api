@@ -9,19 +9,21 @@ var bodyParser = require('body-parser');
 const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
-// const corsOptions ={
-//     origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
-//     credentials:true,            //access-control-allow-credentials:true
-//     optionSuccessStatus:200
-// }
-// app.use(cors(corsOptions));
+const corsOptions ={
+    origin: ['https://tatbib-api.onrender.com/','https://tatbib-v3.vercel.app/'],
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+// const corsOptions = ["http://localhost:3000/"] // (You can ur server also)
+// app.use(cors(corsOptions)
 
-app.use(
-  cors({
-    origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
+//     credentials: true,
+//   })
+// );
 
 
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -32,17 +34,6 @@ app.use(bodyParser.json());
 
 
 
-// mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }).then(() => {
-// //   logger.info("Successfully connected to the database");    
-//   console.log("Successfully connected to the database")
-// }).catch(err => {
-// //   logWinston.error('Could not connect to the database. Exiting now...', err);
-// //   logger.exit();
-//   console.log("ERROR database",err)
-// });
 
 
 mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority' , {
@@ -53,17 +44,6 @@ mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.n
 }).catch(err => {
   console.log('Could not connect to the database. Exiting now...', err);
 });
-
-// mongoose.connect('mongodb+srv://tatbib:x7u2Tv3qRGAZqI8n@cluster0.fkjkw.mongodb.net/Tatbib?retryWrites=true&w=majority;',{
-//   useNewUrlParser:true,
-//   useUnifiedTopology: true
-// });
-// mongoose.connection.on("connected",()=>{
-// console.log("Mongoose connected established successfully");
-// })
-
-
-
 
 
 
