@@ -9,19 +9,19 @@ var bodyParser = require('body-parser');
 const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
-const corsOptions ={
-    origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+// const corsOptions ={
+//     origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
+//     credentials:true,            //access-control-allow-credentials:true
+//     optionSuccessStatus:200
+// }
+// app.use(cors(corsOptions));
 
-// app.use(
-//   cors({
-//     origin: ['https://tatbib-api.onrender.com','https://tatbib.vercel.app'],
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: ['https://tatbib-api.onrender.com','https://tatbib-v3.vercel.app/'],
+    credentials: true,
+  })
+);
 
 
 // parse requests of content-type - application/x-www-form-urlencoded
