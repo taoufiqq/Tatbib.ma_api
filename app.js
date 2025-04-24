@@ -3,16 +3,18 @@ const app = express();
 var cors = require("cors");
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+const punycode = require('punycode/');
 
 const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
 const corsOptions = {
-  origin: ["https://tatbib-api.onrender.com", "https://tatbib-v3.vercel.app"],
+  origin: ["https://tatbib-ma-api.vercel.app", "https://tatbib-v3.vercel.app"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+app.options("*", cors());
 // const corsOptions = ["http://localhost:3000/"] // (You can ur server also)
 // app.use(cors(corsOptions)
 

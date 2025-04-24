@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node --no-deprecation app.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,10 +21,12 @@
     "mongodb": "^5.3.0",
     "mongoose": "^7.0.5",
     "nodemailer": "^6.9.1",
+    "punycode": "^2.3.1",
     "winston": "^3.8.2",
     "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
-  }
+  },
+  "proxy": "https://tatbib-api.onrender.com"
 }
