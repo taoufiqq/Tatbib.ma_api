@@ -3,7 +3,7 @@ const app = express();
 var cors = require("cors");
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
-const punycode = require('punycode/');
+const punycode = require("punycode/");
 
 const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
