@@ -24,7 +24,7 @@ function verifyToken(req, res, next) {
         return res.status(403).json({
             error: "Medcine Ressource, Access Denied"
         })
-    }else if(req.auth.role == "Medcine"){
+    }else if(req.auth.role == "medicine"){
       return next()
     }
 }

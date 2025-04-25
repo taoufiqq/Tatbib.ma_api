@@ -9,11 +9,19 @@ const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
 const corsOptions = {
-  origin: ["https://tatbib-ma-api.vercel.app", "https://tatbib-v3.vercel.app"],
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
+  origin: [
+    "https://tatbib-ma-api.vercel.app",
+    "https://tatbib-v3.vercel.app",
+    "http://localhost:3000", // Allow localhost for local development
+  ],
+  credentials: true, // Allow cookies and credentials in cross-origin requests
+  optionSuccessStatus: 200, // For legacy browsers
 };
+
+// Use the CORS middleware with the options
 app.use(cors(corsOptions));
+
+// Allow pre-flight OPTIONS requests
 app.options("*", cors());
 // const corsOptions = ["http://localhost:3000/"] // (You can ur server also)
 // app.use(cors(corsOptions)
