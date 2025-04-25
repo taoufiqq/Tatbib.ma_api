@@ -37,7 +37,7 @@ const addPatient = async (req, res) => {
     const email = req.body.email;
     const password = hashPassword;
     const login = req.body.login;
-    const role = "Patient";
+    const role = "patient";
 
     const PatientPush = new Patient({
       firstName,

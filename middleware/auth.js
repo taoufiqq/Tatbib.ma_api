@@ -33,7 +33,7 @@ exports.isSecretary = (req, res, next) => {
       return res.status(403).json({
           error: "Secretary Ressource, Access Denied"
       })
-  }else if(req.auth.roleSecretary == "Secretary"){
+  }else if(req.auth.roleSecretary == "secretary"){
     return next()
   }
 }
@@ -42,7 +42,7 @@ exports.isPatient = (req, res, next) => {
         return res.status(403).json({
             error: "Patient Ressource, Access Denied"
         })
-    }else if(req.auth.role == "Patient"){
+    }else if(req.auth.role == "patient"){
       return next()
     }
 }
