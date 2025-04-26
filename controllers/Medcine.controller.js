@@ -195,7 +195,7 @@ const addMedcine = async(req, res) => {
         const password = hashPassword;
         const speciality = req.body.speciality;
         const city = req.body.city;
-        const role = "Medcine";
+        const role = "medicine";
         const availablity = "Available";
         // const verified = false;  
         const MedcinePush = new Medcine({
@@ -258,48 +258,55 @@ const addMedcine = async(req, res) => {
       
       //-------------------------login Medcine-----------------------------
       
-      const loginMedcine= (req, res) => {
+      const loginMedcine = (req, res) => {
+        let login = req.body.login;
+        let password = req.body.password;
       
-        let login=req.body.login;
-        let password=req.body.password;
-      
-        Medcine.findOne({login : login})
-      .then(medcine => {
-      
-      if(medcine){
-        bcrypt.compare(password, medcine.password, function(err, result){
-            if (err) {
-                res.json({
-                  error : err
-                })
-              }
-           if(result){
-              let token=jwt.sign({login :login},'tokenkey',(err,token) => {
-                res.cookie("token", token)  
-                res.json({
-                    token : token,
-                    role:medcine.role,
-                    id:medcine._id,
-                    medcine:medcine,
-                   
-                })
-              })
-           }
-           else {
-            res.json({
-              message: 'password incorrect try again !!'
-            })
-          }
-           
-        })
-      }else{
-        res.json({
-            message : 'Medcine not found'
-        })
-      }
-      }).catch((err) => res.status(400).json("Error :" + err));
-      }
-
+        Medcine.findOne({ login: login })
+          .then(medcine => {
+            if (medcine) {
+              bcrypt.compare(password, medcine.password, function(err, result) {
+                if (err) {
+                  return res.status(500).json({
+                    error: err
+                  });
+                }
+                if (result) {
+                  let token = jwt.sign({ login: login }, 'tokenkey', (err, token) => {
+                    if (err) {
+                      return res.status(500).json({
+                        error: "Failed to generate token"
+                      });
+                    }
+                    
+                    // Normalize the role before sending
+                    const normalizedRole = medcine.role.toLowerCase() === 'medcine' ? 'medicine' : medcine.role.toLowerCase();
+                    
+                    res.json({
+                      token: token,
+                      role: normalizedRole, // Send normalized role
+                      id: medcine._id,
+                      medcine: medcine,
+                      verified: medcine.verified
+                    });
+                  });
+                } else {
+                  res.status(401).json({
+                    message: 'Password incorrect. Please try again!'
+                  });
+                }
+              });
+            } else {
+              res.status(404).json({
+                message: 'Doctor not found'
+              });
+            }
+          }).catch(err => {
+            res.status(500).json({
+              error: err.message
+            });
+          });
+      };
  //-------------------------logout Medcine and remove token-----------------------------   
      const logout = (req, res) => {
         const deconnect = res.clearCookie("token")
