@@ -108,7 +108,7 @@ const loginPatient = (req, res) => {
       if (patient) {
         bcrypt.compare(password, patient.password, function (err, result) {
           if (err) {
-            res.json({
+            return res.status(500).json({
               error: err,
             });
           }
