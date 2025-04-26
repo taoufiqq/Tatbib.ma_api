@@ -18,14 +18,16 @@ const Appointment = new Schema(
         required: true,
         trim: true,     
     },
-    patient :{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Patient'
-    },
-    medcine :{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Medcine'
-    },
+    patient: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Patient',
+        required: true 
+      },
+      medicine: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Medicine',
+        required: true 
+      },
 },
  {
     versionKey: false
