@@ -26,9 +26,9 @@ const getAllPatient = (req, res) => {
 const addPatient = async (req, res) => {
   bcrypt.hash(req.body.password, 10, function (err, hashPassword) {
     if (err) {
-        res.json({
-            error: err
-        })
+      res.json({
+        error: err,
+      });
     }
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
@@ -48,15 +48,11 @@ const addPatient = async (req, res) => {
       password,
       login,
       role,
-        
     });
-    PatientPush
-    
-        .save()
-        .then(() => res.json("Patient authentication successfully"))
-        .catch((err) => res.status(400).json("Error :" + err));
-});
-
+    PatientPush.save()
+      .then(() => res.json("Patient authentication successfully"))
+      .catch((err) => res.status(400).json("Error :" + err));
+  });
 
   // ----------------------send email validation -------------------------------
   // const token = jwt.sign({login: req.body.login, email : req.body.email}, 'tokenkey');
@@ -106,8 +102,8 @@ const loginPatient = (req, res) => {
   let password = req.body.password;
 
   Patient.findOne({
-      login: login,
-    })
+    login: login,
+  })
     .then((patient) => {
       if (patient) {
         bcrypt.compare(password, patient.password, function (err, result) {
@@ -117,49 +113,61 @@ const loginPatient = (req, res) => {
             });
           }
           if (result) {
-            let token = jwt.sign({
-                login: login,
-              },
-              "tokenkey",
-              (err, token) => {
-                res.cookie("token", token);
-                res.json({
-                  token: token,
-                  role: patient.role,
-                  patient: patient,
-                  id: patient._id,
+            let token = jwt.sign({ login: login }, "tokenkey", (err, token) => {
+              if (err) {
+                return res.status(500).json({
+                  error: "Failed to generate token",
                 });
               }
-            );
-          }
-          else {
-            res.json({
-              message: 'password incorrect try again !!'
-            })
+
+              // Normalize the role before sending
+              const normalizedRole =
+                patient.role.toLowerCase() === "patient"
+                  ? "patient"
+                  : patient.role.toLowerCase();
+
+              res.json({
+                token: token,
+                role: normalizedRole, // Send normalized role
+                patient: patient,
+                id: patient._id,
+              });
+            });
+          } else {
+            res.status(401).json({
+              message: "Password incorrect. Please try again!",
+            });
           }
         });
       } else {
-        res.json({
-          message: "Patient not found",
+        res.status(404).json({
+          message: "Doctor not found",
         });
       }
     })
-    .catch((err) => res.status(400).json("Error :" + err));
+    .catch((err) => {
+      res.status(500).json({
+        error: err.message,
+      });
+    });
 };
 
 //________________________updating Patient _____________________________
 const updatePatient = (req, res) => {
   // Find Product By ID and update it
-  Patient.updateOne({
+  Patient.updateOne(
+    {
       _id: req.params.id,
-    }, {
+    },
+    {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       age: req.body.age,
       telephone: req.body.telephone,
       login: req.body.login,
-    })
+    }
+  )
     .then(() => res.status(201).json("Patient updated successfully"))
     .catch((err) => res.status(400).json("Error :" + err));
 };
@@ -185,12 +193,10 @@ const getPatientById = (req, res) => {
 
 //______________________Delete Patient___________________________________
 const deletePatient = (req, res) => {
-  const {
-    id
-  } = req.params;
+  const { id } = req.params;
   Patient.findOneAndDelete({
-      _id: id
-    })
+    _id: id,
+  })
     .then((Patient) => {
       if (!Patient) {
         res.status(404).json({
@@ -209,12 +215,10 @@ const deletePatient = (req, res) => {
 };
 //______________________Delete Appointment ___________________________________
 const deleteAppointment = (req, res) => {
-  const {
-    id
-  } = req.params;
+  const { id } = req.params;
   Appointment.findOneAndDelete({
-      _id: id
-    })
+    _id: id,
+  })
     .then((Appointment) => {
       if (!Appointment) {
         res.status(404).json({
@@ -237,7 +241,7 @@ const logout = (req, res) => {
   const deconnect = res.clearCookie("token");
 
   res.json({
-    message: "Medcine is Signout !!",
+    message: "Patient is Signout !!",
   });
 };
 module.exports = {
