@@ -37,7 +37,7 @@ const Secretary = new Schema(
         required: true,
         trim: true,
     },
-    role : {
+    roleSecretary : {
         type : String,
         required : true,
         trim : true,

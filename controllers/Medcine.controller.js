@@ -116,7 +116,7 @@ const addSecretary = async(req, res) => {
   const login = req.body.login;
   const password = hashPassword;
   const status = "InActive";
-  const role = "secretary";
+  const roleSecretary = "Secretary";
   const SecretaryPush = new Secretary({
     fullName,
     email,
@@ -124,7 +124,7 @@ const addSecretary = async(req, res) => {
     password,
     status,
     loginMedcine,
-    role
+    roleSecretary
   });
   SecretaryPush
     .save()
@@ -195,7 +195,7 @@ const addMedcine = async(req, res) => {
         const password = hashPassword;
         const speciality = req.body.speciality;
         const city = req.body.city;
-        const role = "medicine";
+        const role = "Medcine";
         const availablity = "Available";
         // const verified = false;  
         const MedcinePush = new Medcine({
