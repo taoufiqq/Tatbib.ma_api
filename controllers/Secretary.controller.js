@@ -54,7 +54,7 @@ const loginSecretary = (req, res) => {
               res.cookie("tokenSecretary", tokenSecretary);
               res.json({
                 tokenSecretary: tokenSecretary,
-                role: normalizedRole, // Send normalized role
+                roleSecretary: normalizedRole, // Send normalized role
                 status: secretary.status,
                 id: secretary.id,
                 loginMedcine: secretary.loginMedcine
