@@ -98,25 +98,53 @@ const addAppointment = async (req,res) =>{
         });
   };
   // -------------------------- get Appointment Medcine --------------------------- 
-  const getAppointmentMedcine = (req, res) => {
-    //  console.log(req.params.id);
-Appointment.find({medcine:req.params.id})
-  .populate('patient')
-  .then(Appointment => {
-    res.status(200).json(Appointment);
-  }).catch(err => {
-      if(err.kind === 'ObjectId') {
-          return res.status(404).send({
-              message: "Appointment not found with id " + req.params.id,
-              error: err
-          });                
+  const getAppointmentMedcine = async (req, res) => {
+    try {
+      // Fix the typo in the field name (medcine -> medicine)
+      const appointments = await Appointment.find({ medicine: req.params.id })
+        .populate({
+          path: 'patient',
+          select: '_id lastName firstName email telephone' // Explicitly select fields
+        })
+        .populate({
+          path: 'medicine',
+          select: '_id name' // Include medicine details if needed
+        })
+        .sort({ dateTime: 1 }) // Sort by appointment time
+        .lean(); // Convert to plain JS objects
+  
+      if (!appointments || appointments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: `No appointments found for medicine with id ${req.params.id}`,
+          data: []
+        });
       }
-      return res.status(500).send({
-          message: "Error retrieving Appointment with id " + req.params.id,
-          error: err
+  
+      res.status(200).json({
+        success: true,
+        count: appointments.length,
+        data: appointments
       });
-  });
-};
+  
+    } catch (err) {
+      console.error('Error in getAppointmentMedcine:', err);
+  
+      if (err.kind === 'ObjectId') {
+        return res.status(400).json({ // 400 for bad request
+          success: false,
+          message: "Invalid medicine ID format",
+          error: err.message
+        });
+      }
+  
+      res.status(500).json({
+        success: false,
+        message: "Server error while retrieving appointments",
+        error: err.message
+      });
+    }
+  };
 
   // -------------------------- get Appointment to Secretary --------------------------- 
   const getAppointmentSecretary = (req, res) => {
