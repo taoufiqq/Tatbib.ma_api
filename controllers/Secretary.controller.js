@@ -13,69 +13,70 @@ const Patient = require('../models/Patient.model');
      
 //-------------------------login Secretary-----------------------------
       
-const loginSecretary= (req, res) => {
-      
-        let login=req.body.login;
-        let password=req.body.password;
-      
-        Secretary.findOne({login : login})
-      .then(Secretary => {
-      
-      if(Secretary){
+const loginSecretary = (req, res) => {
+  let login = req.body.login;
+  let password = req.body.password;
 
-        bcrypt.compare(password, Secretary.password, function(err, result){
-            if (err) {
-                res.json({
-                  error : err
-                })
-              }
-
-        if(result){
-
-  
-          if(Secretary.status == "InActive"){
-            res.json({
-              status: 'InActive'
-              })
-        }
-        else if(Secretary.status == "Block"){
-          res.json({
-            status: 'Block'
-            })
-      }
-        
-        
-        
-        else {
-          let tokenSecretary = jwt.sign({
-            login: login
-          }, 'tokenkey', (err, tokenSecretary) => {
-            res.cookie("tokenSecretary", tokenSecretary)
-            res.json({
-                 tokenSecretary : tokenSecretary,
-                 roleSecretary:Secretary.roleSecretary,
-                 status:Secretary.status,
-                 id:Secretary.id,
-                 loginMedcine:Secretary.loginMedcine
-            })
+  Secretary.findOne({ login: login })
+    .then(secretary => {
+      if (secretary) {
+        bcrypt.compare(password, secretary.password, function(err, result) {
+          if (err) {
+            return res.status(500).json({
+              error: err
+            });
+          }
           
-        })
+          if (result) {
+            // Check secretary status before generating token
+            if (secretary.status === "InActive") {
+              return res.status(403).json({
+                status: 'InActive'
+              });
+            } 
+            else if (secretary.status === "Block") {
+              return res.status(403).json({
+                status: 'Block'
+              });
+            }
+            
+            // Generate token if status is active
+            let tokenSecretary = jwt.sign({ login: login }, 'tokenkey', (err, tokenSecretary) => {
+              if (err) {
+                return res.status(500).json({
+                  error: "Failed to generate token"
+                });
+              }
+              
+              // Normalize the role before sending
+              const normalizedRole = secretary.roleSecretary.toLowerCase();
+              
+              res.cookie("tokenSecretary", tokenSecretary);
+              res.json({
+                tokenSecretary: tokenSecretary,
+                role: normalizedRole, // Send normalized role
+                status: secretary.status,
+                id: secretary.id,
+                loginMedcine: secretary.loginMedcine
+              });
+            });
+          } else {
+            res.status(401).json({
+              message: 'Password incorrect. Please try again!'
+            });
+          }
+        });
+      } else {
+        res.status(404).json({
+          message: 'Secretary not found'
+        });
       }
-
-
-    }else {
-        res.json({
-          message: 'password incorrect try again !!'
-        })
-      }
-    })
-  } else {
-    res.json({
-      message: 'Admin not found'
-    })
-  }
-}).catch((err) => res.status(400).json("Error :" + err));
-}
+    }).catch(err => {
+      res.status(500).json({
+        error: err.message
+      });
+    });
+};
  //-------------------------logout Secretary and remove token-----------------------------   
      const logout = (req, res) => {
         const deconnect = res.clearCookie("tokenPatient")

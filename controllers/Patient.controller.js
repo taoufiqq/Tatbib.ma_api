@@ -141,7 +141,7 @@ const loginPatient = (req, res) => {
         });
       } else {
         res.status(404).json({
-          message: "Doctor not found",
+          message: "Patient not found",
         });
       }
     })
