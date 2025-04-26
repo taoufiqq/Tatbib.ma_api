@@ -53,7 +53,7 @@ const loginSecretary= (req, res) => {
             res.cookie("tokenSecretary", tokenSecretary)
             res.json({
                  tokenSecretary : tokenSecretary,
-                 roleSecretary:Secretary.roleSecretary,
+                 role:Secretary.role,
                  status:Secretary.status,
                  id:Secretary.id,
                  loginMedcine:Secretary.loginMedcine
