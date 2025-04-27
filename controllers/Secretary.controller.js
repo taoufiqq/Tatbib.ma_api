@@ -26,20 +26,22 @@ const loginSecretary = (req, res) => {
               error: err
             });
           }
-          
+
           if (result) {
             // Check secretary status before generating token
             if (secretary.status === "InActive") {
               return res.status(403).json({
-                status: 'InActive'
+                status: 'InActive',
+                message: 'Your account is not active yet. Please wait for activation.'
               });
             } 
             else if (secretary.status === "Block") {
               return res.status(403).json({
-                status: 'Block'
+                status: 'Block',
+                message: 'This account is blocked.'
               });
             }
-            
+
             // Generate token if status is active
             let tokenSecretary = jwt.sign({ login: login }, 'tokenkey', (err, tokenSecretary) => {
               if (err) {
@@ -47,10 +49,10 @@ const loginSecretary = (req, res) => {
                   error: "Failed to generate token"
                 });
               }
-              
+
               // Normalize the role before sending
               const normalizedRole = secretary.roleSecretary.toLowerCase();
-              
+
               res.cookie("tokenSecretary", tokenSecretary);
               res.json({
                 tokenSecretary: tokenSecretary,
