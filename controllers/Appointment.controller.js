@@ -98,20 +98,19 @@ const addAppointment = async (req,res) =>{
         });
   };
   // -------------------------- get Appointment Medcine --------------------------- 
-  const getAppointmentMedcine = async (req, res) => {
+  const getAppointmentMedicine = async (req, res) => {
     try {
-      // Fix the typo in the field name (medcine -> medicine)
-      const appointments = await Appointment.find({ medcine: req.params.id })
+      const appointments = await Appointment.find({ medicine: req.params.id })
         .populate({
           path: 'patient',
-          select: '_id lastName firstName email telephone' // Explicitly select fields
+          select: '_id lastName firstName email telephone'
         })
         .populate({
-          path: 'medcine',
-          select: '_id name' // Include medicine details if needed
+          path: 'medicine',
+          select: '_id name'
         })
-        .sort({ dateTime: 1 }) // Sort by appointment time
-        .lean(); // Convert to plain JS objects
+        .sort({ dateTime: 1 })
+        .lean();
   
       if (!appointments || appointments.length === 0) {
         return res.status(404).json({
@@ -126,12 +125,11 @@ const addAppointment = async (req,res) =>{
         count: appointments.length,
         data: appointments
       });
-  
     } catch (err) {
-      console.error('Error in getAppointmentMedcine:', err);
+      console.error('Error in getAppointmentMedicine:', err);
   
       if (err.kind === 'ObjectId') {
-        return res.status(400).json({ // 400 for bad request
+        return res.status(400).json({
           success: false,
           message: "Invalid medicine ID format",
           error: err.message
@@ -145,6 +143,7 @@ const addAppointment = async (req,res) =>{
       });
     }
   };
+  
 
   // -------------------------- get Appointment to Secretary --------------------------- 
   const getAppointmentSecretary = (req, res) => {
