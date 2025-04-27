@@ -39,42 +39,32 @@ const getAppointmentById = (req, res) => {
 }; 
 // ----------------- add Appointment --------------------
 
-const addAppointment = async (req,res) =>{
-  
-
-  const dateTime= req.body.dateTime;
-
+const addAppointment = async (req, res) => {
+  const dateTime = req.body.dateTime;
   const status = "Unconfirmed";
-  const patient= req.body.patient;
-  const medcine= req.body.medcine;
-  const loginMedcine= req.body.loginMedcine;
+  const patient = req.body.patient;
+  const medicine = req.body.medcine; // ⚡ Correct here
 
-  const existingAppointment = await Appointment.findOne({ medcine : medcine , dateTime: dateTime });
+  const loginMedcine = req.body.loginMedcine;
 
-  console.log("******************************************************************");
-  console.log(existingAppointment);
-  console.log("******************************************************************");
+  const existingAppointment = await Appointment.findOne({ medicine: medicine, dateTime: dateTime });
 
   if (existingAppointment) {
-  
-    return res.json({
-      error: true,
-    });
-
-  
+    return res.json({ error: true });
   }
-  const appointmentPush = new Appointment({
-        dateTime,
-        status,
-        patient,
-        medcine,
-        loginMedcine
 
-   });
-   let result = await appointmentPush.save();
-   res.send(result)
- 
- };
+  const appointmentPush = new Appointment({
+    dateTime,
+    status,
+    patient,
+    medicine,         // ⚡ Correct here
+    loginMedcine
+  });
+
+  let result = await appointmentPush.save();
+  res.send(result);
+};
+
 
   // -------------------------- get Appointment Patient --------------------------- 
   const getAppointmentPatient = (req, res) => {
