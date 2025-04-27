@@ -8,18 +8,20 @@ const Secretary = require('../models/Secretary.model');
 const Ordonnance = require('../models/Ordonnance.model');
 
 //______________________get all Medcine____________________
-const getAllMedcine= (req, res) => {
-  Medcine.find()
-        .then(Medcine => {
-              res.status(200).json(Medcine);
-            }).catch(error => {
-              console.log(error);
-              res.status(500).json({
-                  message: "Error!",
-                  error: error
-              });
-            });
-      };
+const getAllMedcine = (req, res) => {
+  Medcine.find()  // Ensure you're using the correct model name here
+    .then((medicines) => {  // Fix variable to reflect the correct data
+      res.status(200).json(medicines);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error retrieving medicines.",
+        error: error,
+      });
+    });
+};
+
 //______________________get all Secretary 
 const getAllSecretary= (req, res) => {
   Secretary.find()
