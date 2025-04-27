@@ -35,7 +35,7 @@ const loginSecretary = (req, res) => {
                 message: 'Your account is not active yet. Please wait for activation.'
               });
             } 
-            else if (secretary.status === "Block") {
+            else if (secretary.status === "Blocked") {
               return res.status(403).json({
                 status: 'Blocked',
                 message: 'This account is blocked.'
