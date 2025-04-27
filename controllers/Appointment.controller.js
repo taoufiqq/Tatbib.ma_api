@@ -19,7 +19,7 @@ const getAllAppointment = (req, res) => {
 //--------------------------get Appointment By Id---------------------------
 const getAppointmentById = (req, res) => {
   Appointment.findById(req.params.id)
-    .populate("medcine")
+    .populate("medicine")
     .populate("patient")
     .then((Appointment) => {
       res.status(200).json(Appointment);
