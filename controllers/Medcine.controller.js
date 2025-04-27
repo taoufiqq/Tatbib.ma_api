@@ -102,41 +102,51 @@ const getSecretaryByMedcineName = (req, res) => {
     });
 };
 //________________________ Add Compte Secretary _________________
-const addSecretary = async(req, res) => {
+const addSecretary = async (req, res) => {
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-  
-       
-  bcrypt.hash(req.body.password, 10, function(err, hashPassword) {
-      if (err) {
-        res.json({error : err})    
-      }
-  const loginMedcine = req.body.loginMedcine;
-  const fullName = req.body.fullName;
-  const email = req.body.email;
-  const login = req.body.login;
-  const password = hashPassword;
-  const status = "InActive";
-  const roleSecretary = "Secretary";
-  const SecretaryPush = new Secretary({
-    fullName,
-    email,
-    login,
-    password,
-    status,
-    loginMedcine,
-    roleSecretary
-  });
-  SecretaryPush
-    .save()
-    .then(() => res.json("Secretary authentication successfully  Please Wait untill Medcine ACCEPTER Your Compte"))
+  try {
+    const { loginMedcine, fullName, email, login, password } = req.body;
 
-     
-    .catch((err) => res.status(400).json("Error :" + err));
+    // Check if secretary already exists
+    const existingSecretary = await Secretary.findOne({ $or: [{ email }, { login }] });
+    if (existingSecretary) {
+      return res.status(400).json({ message: 'Secretary with this email or login already exists' });
+    }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-});
+    const newSecretary = new Secretary({
+      fullName,
+      email,
+      login,
+      password: hashedPassword,
+      status: "InActive",
+      loginMedcine,
+      roleSecretary: "Secretary"
+    });
 
-}
+    await newSecretary.save();
+    
+    res.status(201).json({ 
+      success: true,
+      message: 'Secretary account created successfully. Please wait for doctor approval.'
+    });
+
+  } catch (error) {
+    console.error('Error creating secretary account:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error while creating secretary account',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
 
  //________________________Activate Compte Secretary_________________
  const ActivateCompteSecretary = (req, res) => {
