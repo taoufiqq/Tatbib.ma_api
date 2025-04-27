@@ -98,7 +98,7 @@ const addAppointment = async (req,res) =>{
         });
   };
   // -------------------------- get Appointment Medcine --------------------------- 
-  const getAppointmentMedicine = async (req, res) => {
+  const getAppointmentMedcine = async (req, res) => {
     try {
       const appointments = await Appointment.find({ medicine: req.params.id })
         .populate({
