@@ -31,14 +31,12 @@ const loginSecretary = (req, res) => {
             // Check secretary status before generating token
             if (secretary.status === "InActive") {
               return res.status(403).json({
-                status: 'InActive',
-                message: 'Account Inactive'
+                status: 'InActive'
               });
             } 
             else if (secretary.status === "Block") {
               return res.status(403).json({
-                status: 'Block',
-                message: 'Account Blocked'
+                status: 'Block'
               });
             }
             
@@ -79,6 +77,7 @@ const loginSecretary = (req, res) => {
       });
     });
 };
+
  //-------------------------logout Secretary and remove token-----------------------------   
      const logout = (req, res) => {
         const deconnect = res.clearCookie("tokenPatient")
