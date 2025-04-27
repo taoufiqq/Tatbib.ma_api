@@ -149,17 +149,28 @@ const addSecretary = async (req, res) => {
 };
 
  //________________________Activate Compte Secretary_________________
- const ActivateCompteSecretary = (req, res) => {
+ const ManageSecretaryAccount = (req, res) => {
   // Find Secretary By ID and update it
   Secretary.updateOne(
-                   {_id: req.params.id},
-                    {
-                      status : req.body.status,
-                    }
-                  )
-  .then(() => res.status(201).json("compte Activated  successfully"))
-  .catch((err) => res.status(400).json("Error :" + err));
+    { _id: req.params.id },
+    { status: req.body.status }
+  )
+    .then(() => {
+      // Check if status is 'Blocked' and send logout required flag
+      if (req.body.status === "Blocked") {
+        return res.status(200).json({
+          message: "Account has been blocked successfully",
+          logoutRequired: true, // This will signal the frontend to log the user out
+        });
+      }
+
+      res.status(201).json("Account activated successfully");
+    })
+    .catch((err) => {
+      res.status(400).json("Error: " + err);
+    });
 };
+
  //________________________updating Medcine___________________
  const UpdateAvailablityMedcine = (req, res) => {
   // Find Medcine By ID and update it
@@ -419,5 +430,5 @@ const getAllOrdonnance = (req, res) => {
     });
   };
 module.exports={
-  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,loginMedcine,logout,ActivateCompteSecretary,getSecretaryById,getAllSecretary,getMedcineBySpeciality
+  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,loginMedcine,logout,ManageSecretaryAccount,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };

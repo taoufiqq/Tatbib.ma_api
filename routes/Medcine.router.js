@@ -20,7 +20,7 @@ router.get('/getOrdonnanceByMedcine/:id', MedcineController.getOrdonnanceByMedci
 router.get('/getOrdonnanceByPatient/:id', MedcineController.getOrdonnanceByPatient);
 // router.put('/activateCompte/:token', MedcineController.activateCompteMedcine);
 router.put('/updateAvailablityMedcine/:id',MedcineController.UpdateAvailablityMedcine);
-router.put('/activateCompteSecretary/:id',MedcineController.ActivateCompteSecretary);
+router.put('/ManageSecretaryAccount/:id',MedcineController.ManageSecretaryAccount);
 router.delete('/deleteMedcine/:id',MedcineController.deleteMedcine);
 router.delete('/deleteSecretary/:id',MedcineController.deleteSecretary);
 
