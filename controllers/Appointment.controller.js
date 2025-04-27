@@ -43,7 +43,7 @@ const addAppointment = async (req, res) => {
   const dateTime = req.body.dateTime;
   const status = "Pending";
   const patient = req.body.patient;
-  const medicine = req.body.medcine; // ⚡ Correct here
+  const medicine = req.body.medicine; // ⚡ Correct here
 
   const loginMedcine = req.body.loginMedcine;
 
