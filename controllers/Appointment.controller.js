@@ -71,13 +71,14 @@ const addAppointment = async (req, res) => {
 // -------------------------- get Appointment Patient ---------------------------
 const getAppointmentPatient = (req, res) => {
   Appointment.find({ patient: req.params.id })
-    .populate("medicine")  // ✅ correct field name
+    .populate("medicine")
     .populate("patient")
-    .then((appointments) => {  // ✅ lowercase, good practice
+    .sort({ dateTime: 1 }) // 1 for ascending order, -1 for descending order
+    .then((appointments) => {
       res.status(200).json(appointments);
     })
     .catch((err) => {
-      console.error(err); // Always good to log the error
+      console.error(err); // Always log the error for debugging
       if (err.kind === "ObjectId") {
         return res.status(404).send({
           message: "Appointment not found with id " + req.params.id,
