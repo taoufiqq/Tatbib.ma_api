@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Medcine = new Schema(
+const Medicine = new Schema(
 {
 
     fullName: {
@@ -55,5 +55,5 @@ const Medcine = new Schema(
     versionKey: false
 });
 
-const MedcineList = mongoose.model("Medcine",Medcine);
-module.exports=MedcineList;
+const MedicineList = mongoose.model("Medicine",Medicine);
+module.exports=MedicineList;

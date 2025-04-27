@@ -1,28 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const MedcineController = require('../controllers/Medcine.controller');
+const MedicineController = require('../controllers/Medicine.controller');
 
 
 
-router.post('/authentication',MedcineController.addMedcine);
-router.post('/createAccountSecretary',MedcineController.addSecretary);
-router.post('/addOrdonnance',MedcineController.addOrdonnance);
-router.post('/login', MedcineController.loginMedcine);
-router.get('/logout', MedcineController.logout);
-router.get('/getAllMedcine',MedcineController.getAllMedcine);
-router.get('/getAllSecretary',MedcineController.getAllSecretary);
-router.get('/getAllOrdonnance',MedcineController.getAllOrdonnance);
-router.get('/getMedcineById/:id',MedcineController.getMedcineById);
-router.get('/getSecretaryById/:id',MedcineController.getSecretaryById);
-router.get('/getSecretaryByMedcineName/:loginMedcine',MedcineController.getSecretaryByMedcineName);
-router.get('/searchMedcine/:speciality',MedcineController.getMedcineBySpeciality);
-router.get('/getOrdonnanceByMedcine/:id', MedcineController.getOrdonnanceByMedcine);
-router.get('/getOrdonnanceByPatient/:id', MedcineController.getOrdonnanceByPatient);
-// router.put('/activateCompte/:token', MedcineController.activateCompteMedcine);
-router.put('/updateAvailablityMedcine/:id',MedcineController.UpdateAvailablityMedcine);
-router.put('/manageSecretaryAccount/:id',MedcineController.ManageSecretaryAccount);
-router.delete('/deleteMedcine/:id',MedcineController.deleteMedcine);
-router.delete('/deleteSecretary/:id',MedcineController.deleteSecretary);
+router.post('/authentication',MedicineController.addMedicine);
+router.post('/createAccountSecretary',MedicineController.addSecretary);
+router.post('/addOrdonnance',MedicineController.addOrdonnance);
+router.post('/login', MedicineController.loginMedicine);
+router.get('/logout', MedicineController.logout);
+router.get('/getAllMedicine',MedicineController.getAllMedicine);
+router.get('/getAllSecretary',MedicineController.getAllSecretary);
+router.get('/getAllOrdonnance',MedicineController.getAllOrdonnance);
+router.get('/getMedicineById/:id',MedicineController.getMedicineById);
+router.get('/getSecretaryById/:id',MedicineController.getSecretaryById);
+router.get('/getSecretaryByMedicineName/:loginMedicine',MedicineController.getSecretaryByMedicineName);
+router.get('/searchMedicine/:speciality',MedicineController.getMedicineBySpeciality);
+router.get('/getOrdonnanceByMedicine/:id', MedicineController.getOrdonnanceByMedicine);
+router.get('/getOrdonnanceByPatient/:id', MedicineController.getOrdonnanceByPatient);
+// router.put('/activateCompte/:token', MedicineController.activateCompteMedicine);
+router.put('/updateAvailablityMedicine/:id',MedicineController.UpdateAvailablityMedicine);
+router.put('/manageSecretaryAccount/:id',MedicineController.ManageSecretaryAccount);
+router.delete('/deleteMedicine/:id',MedicineController.deleteMedicine);
+router.delete('/deleteSecretary/:id',MedicineController.deleteSecretary);
 
 module.exports = router;
 
