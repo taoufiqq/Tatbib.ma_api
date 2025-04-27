@@ -100,14 +100,14 @@ const addAppointment = async (req,res) =>{
   // -------------------------- get Appointment Medcine --------------------------- 
   const getAppointmentMedcine = async (req, res) => {
     try {
-      const appointments = await Appointment.find({ medicine: req.params.id })
+      const appointments = await Appointment.find({ medicine: req.params.id }) // FIXED HERE
         .populate({
           path: 'patient',
           select: '_id lastName firstName email telephone'
         })
         .populate({
           path: 'medicine',
-          select: '_id name'
+          select: '_id name' // Optional: you can also add description, etc.
         })
         .sort({ dateTime: 1 })
         .lean();
@@ -143,6 +143,7 @@ const addAppointment = async (req,res) =>{
       });
     }
   };
+  
   
 
   // -------------------------- get Appointment to Secretary --------------------------- 
