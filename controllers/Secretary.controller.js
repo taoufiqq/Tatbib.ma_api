@@ -31,12 +31,14 @@ const loginSecretary = (req, res) => {
             // Check secretary status before generating token
             if (secretary.status === "InActive") {
               return res.status(403).json({
-                status: 'InActive'
+                status: 'InActive',
+                message: 'Account Inactive'
               });
             } 
             else if (secretary.status === "Block") {
               return res.status(403).json({
-                status: 'Block'
+                status: 'Block',
+                message: 'Account Blocked'
               });
             }
             
