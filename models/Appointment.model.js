@@ -25,7 +25,7 @@ const Appointment = new Schema(
     },
     medicine: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Medicine",
+      ref: "Medcine",
       required: true,
     },
   },

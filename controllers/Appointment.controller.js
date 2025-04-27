@@ -101,13 +101,13 @@ const addAppointment = async (req,res) =>{
   const getAppointmentMedcine = async (req, res) => {
     try {
       // Fix the typo in the field name (medcine -> medicine)
-      const appointments = await Appointment.find({ medicine: req.params.id })
+      const appointments = await Appointment.find({ medcine: req.params.id })
         .populate({
           path: 'patient',
           select: '_id lastName firstName email telephone' // Explicitly select fields
         })
         .populate({
-          path: 'medicine',
+          path: 'medcine',
           select: '_id name' // Include medicine details if needed
         })
         .sort({ dateTime: 1 }) // Sort by appointment time
