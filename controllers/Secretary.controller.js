@@ -37,7 +37,7 @@ const loginSecretary = (req, res) => {
             } 
             else if (secretary.status === "Block") {
               return res.status(403).json({
-                status: 'Block',
+                status: 'Blocked',
                 message: 'This account is blocked.'
               });
             }
