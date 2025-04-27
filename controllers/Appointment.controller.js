@@ -71,8 +71,8 @@ const addAppointment = async (req, res) => {
 // -------------------------- get Appointment Patient ---------------------------
 const getAppointmentPatient = (req, res) => {
   Appointment.find({ patient: req.params.id })
-    .populate("medicine")
-    .populate("patient")
+  .populate("medicine")  // Populate the medicine field
+  .populate("patient")
     .sort({ dateTime: 1 }) // 1 for ascending order, -1 for descending order
     .then((appointments) => {
       res.status(200).json(appointments);
