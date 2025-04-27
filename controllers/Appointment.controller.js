@@ -72,7 +72,7 @@ const addAppointment = async (req, res) => {
 const getAppointmentPatient = (req, res) => {
   //  console.log(req.params.id);
   Appointment.find({ patient: req.params.id })
-    .populate("medcine")
+    .populate("medicine")
     .populate("patient")
     .then((Appointment) => {
       res.status(200).json(Appointment);
