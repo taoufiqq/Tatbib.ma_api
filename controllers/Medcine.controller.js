@@ -9,7 +9,7 @@ const Ordonnance = require('../models/Ordonnance.model');
 
 //______________________get all Medcine____________________
 const getAllMedcine = (req, res) => {
-  Medcine.find()  // Ensure you're using the correct model name here
+  Medicine.find()  // Ensure you're using the correct model name here
     .then((medicines) => {  // Fix variable to reflect the correct data
       res.status(200).json(medicines);
     })
@@ -56,7 +56,7 @@ const deleteSecretary = (req, res) => {
 };
 //______________________get Medcine By Id____________________
  const getMedcineById = (req, res) => {
-        Medcine.findById(req.params.id)
+        Medicine.findById(req.params.id)
             .then(Medcine => {
               res.status(200).json(Medcine);
             }).catch(err => {
@@ -176,7 +176,7 @@ const addSecretary = async (req, res) => {
  //________________________updating Medcine___________________
  const UpdateAvailablityMedcine = (req, res) => {
   // Find Medcine By ID and update it
-  Medcine.updateOne(
+  Medicine.updateOne(
                    {_id: req.params.id},
                     {
                       availablity : req.body.availablity,
@@ -188,7 +188,7 @@ const addSecretary = async (req, res) => {
  //______________________Delete Medcine _____________________ 
      const deleteMedcine= (req, res) => {
       const {id} = req.params;
-      Medcine.findOneAndDelete({_id: id})
+      Medicine.findOneAndDelete({_id: id})
           .then(Medcine => {
               if(!Medcine) {
                 res.status(404).json({
@@ -285,7 +285,7 @@ const addMedcine = async(req, res) => {
         let login = req.body.login;
         let password = req.body.password;
       
-        Medcine.findOne({ login: login })
+        Medicine.findOne({ login: login })
           .then(medcine => {
             if (medcine) {
               bcrypt.compare(password, medcine.password, function(err, result) {
@@ -343,7 +343,7 @@ const addMedcine = async(req, res) => {
 const getMedcineBySpeciality = (req, res) => {
      
   // let speciality=req.params.speciality;
-  Medcine.find({
+  Medicine.find({
     speciality:req.params.speciality
 
     })
