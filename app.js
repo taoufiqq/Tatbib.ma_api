@@ -9,7 +9,7 @@ const port = process.env.PORT || 3030;
 // const logger = require('./config/logger')
 
 const corsOptions = {
-  origin: ["https://tatbib-api.onrender.com", "https://tatbib-v3.vercel.app"],
+  origin: ["https://tatbib-v3.vercel.app", "http://localhost:3000"],
   credentials: true, // Allow cookies and credentials in cross-origin requests
   optionSuccessStatus: 200, // For legacy browsers
 };
