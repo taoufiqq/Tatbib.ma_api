@@ -5,7 +5,7 @@ const Secretary = new Schema(
 {
     id_medcine:{
         type: mongoose.Schema.Types.ObjectId,
-        ref : 'Medcine'
+        ref : 'Medicine'
       },
       loginMedcine: {
         type: String,
