@@ -143,9 +143,9 @@ const getAppointmentMedcine = async (req, res) => {
 const getAppointmentSecretary = (req, res) => {
   Appointment.find({ loginMedcine: req.params.loginMedcine })
     .populate("patient")
-    .populate("medcine")
-    .then((Appointment) => {
-      res.status(200).json(Appointment);
+    .populate("medicine")
+    .then((appointment) => {
+      res.status(200).json(appointment);
     })
     .catch((err) => {
       if (err.kind === "ObjectId") {
