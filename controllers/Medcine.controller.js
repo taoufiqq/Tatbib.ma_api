@@ -303,7 +303,7 @@ const addMedcine = async(req, res) => {
                     }
                     
                     // Normalize the role before sending
-                    const normalizedRole = medcine.role.toLowerCase() === 'medcine' ? 'medicine' : medcine.role.toLowerCase();
+                    const normalizedRole = medicine.role.toLowerCase() === 'medcine' ? 'medicine' : medicine.role.toLowerCase();
                     
                     res.json({
                       token: token,
