@@ -71,8 +71,8 @@ const addAppointment = async (req, res) => {
 // -------------------------- get Appointment Patient ---------------------------
 const getAppointmentPatient = (req, res) => {
   Appointment.find({ patient: req.params.id })
-  .populate("medicine")  // Populate the medicine field
-  .populate("patient")
+    .populate("medicine") // Populate the medicine field
+    .populate("patient")
     .sort({ dateTime: 1 }) // 1 for ascending order, -1 for descending order
     .then((appointments) => {
       res.status(200).json(appointments);
@@ -140,25 +140,52 @@ const getAppointmentMedcine = async (req, res) => {
 };
 
 // -------------------------- get Appointment to Secretary ---------------------------
-const getAppointmentSecretary = (req, res) => {
-  Appointment.find({ loginMedcine: req.params.loginMedcine })
-    .populate("patient")
-    .populate("medicine")
-    .then((appointment) => {
-      res.status(200).json(appointment);
+const getAppointmentSecretary = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      loginMedcine: req.params.loginMedcine,
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "Appointment not found with id " + req.params.id,
-          error: err,
-        });
-      }
-      return res.status(500).send({
-        message: "Error retrieving Appointment with id " + req.params.id,
-        error: err,
+      .populate({
+        path: "patient",
+        select: "_id lastName firstName email telephone",
+      })
+      .populate({
+        path: "medicine",
+        select: "_id name",
+      })
+      .sort({ dateTime: 1 })
+      .lean();
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No appointments found for doctor with login ${req.params.loginMedcine}`,
+        data: [],
       });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: appointments.length,
+      data: appointments,
     });
+  } catch (err) {
+    console.error("Error in getAppointmentSecretary:", err);
+
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid login format",
+        error: err.message,
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while retrieving secretary appointments",
+      error: err.message,
+    });
+  }
 };
 
 module.exports = {
