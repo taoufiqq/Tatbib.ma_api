@@ -221,7 +221,7 @@ const addMedcine = async(req, res) => {
         const role = "medicine";
         const availablity = "Available";
         // const verified = false;  
-        const MedcinePush = new Medcine({
+        const MedicinePush = new Medicine({
           fullName,         
           email,
           login,
@@ -232,7 +232,7 @@ const addMedcine = async(req, res) => {
           // verified,
           availablity
         });
-    MedcinePush
+    MedicinePush
     .save()
     .then(() => res.json("Medcine authentication successfully"))
     .catch((err) => res.status(400).json("Error :" + err));
@@ -286,9 +286,9 @@ const addMedcine = async(req, res) => {
         let password = req.body.password;
       
         Medicine.findOne({ login: login })
-          .then(medcine => {
-            if (medcine) {
-              bcrypt.compare(password, medcine.password, function(err, result) {
+          .then(medicine => {
+            if (medicine) {
+              bcrypt.compare(password, medicine.password, function(err, result) {
                 if (err) {
                   return res.status(500).json({
                     error: err
@@ -308,9 +308,9 @@ const addMedcine = async(req, res) => {
                     res.json({
                       token: token,
                       role: normalizedRole, // Send normalized role
-                      id: medcine._id,
-                      medcine: medcine,
-                      verified: medcine.verified
+                      id: medicine._id,
+                      medicine: medicine,
+                      verified: medicine.verified
                     });
                   });
                 } else {
@@ -347,8 +347,8 @@ const getMedcineBySpeciality = (req, res) => {
     speciality:req.params.speciality
 
     })
-    .then(Medcine => {
-      res.send(Medcine);
+    .then(medicine => {
+      res.send(medicine);
     }).catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving question."
