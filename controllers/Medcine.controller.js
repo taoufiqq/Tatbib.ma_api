@@ -174,15 +174,15 @@ const addSecretary = async (req, res) => {
 };
 
  //________________________updating Medcine___________________
- const UpdateAvailablityMedcine = (req, res) => {
+ const UpdateAvailabilityMedicine = (req, res) => {
   // Find Medcine By ID and update it
   Medicine.updateOne(
                    {_id: req.params.id},
                     {
-                      availablity : req.body.availablity,
+                      availability : req.body.availability,
                     }
                   )
-  .then(() => res.status(201).json("availablity updated successfully"))
+  .then(() => res.status(201).json("availability updated successfully"))
   .catch((err) => res.status(400).json("Error :" + err));
 };
  //______________________Delete Medcine _____________________ 
@@ -219,7 +219,7 @@ const addMedcine = async(req, res) => {
         const speciality = req.body.speciality;
         const city = req.body.city;
         const role = "medicine";
-        const availablity = "Available";
+        const availability = "Available";
         // const verified = false;  
         const MedicinePush = new Medicine({
           fullName,         
@@ -230,7 +230,7 @@ const addMedcine = async(req, res) => {
           city,
           role,
           // verified,
-          availablity
+          availability
         });
     MedicinePush
     .save()
@@ -432,5 +432,5 @@ const getAllOrdonnance = (req, res) => {
     });
   };
 module.exports={
-  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailablityMedcine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,loginMedcine,logout,ManageSecretaryAccount,getSecretaryById,getAllSecretary,getMedcineBySpeciality
+  addOrdonnance,getAllOrdonnance,getOrdonnanceByMedcine,getOrdonnanceByPatient,getAllMedcine,getMedcineById,UpdateAvailabilityMedicine,getSecretaryByMedcineName,deleteSecretary,deleteMedcine,addMedcine,addSecretary,loginMedcine,logout,ManageSecretaryAccount,getSecretaryById,getAllSecretary,getMedcineBySpeciality
 };

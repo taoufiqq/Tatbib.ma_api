@@ -45,7 +45,7 @@ const Medicine = new Schema(
     //     required : true,
     //     trim : true,
     // },
-    availablity : {
+    availability : {
         type : String,
         required : true,
         trim : true,
