@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 const jwt_decode = require('jwt-decode');
 const { validationResult } = require('express-validator');
-const Medcine = require('../models/Medicine.model');
+const Medicine = require('../models/Medicine.model');
 const Secretary = require('../models/Secretary.model');
 const Ordonnance = require('../models/Ordonnance.model');
 
