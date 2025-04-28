@@ -102,16 +102,21 @@ const getSecretaryById = (req, res) => {
 };
 //________________________Get Secretary By NameMedcine ____________________
 const getSecretaryByMedcineName = (req, res) => {
+  console.log("Received request with params:", req.params);
+  console.log("Looking for loginMedcine:", req.params.loginMedcine);
+
   Secretary.find({
     loginMedcine: req.params.loginMedcine,
   })
-    .then((Secretary) => {
-      res.send(Secretary);
+    .then((secretaries) => {
+      console.log("Found secretaries:", secretaries);
+      res.send(secretaries);
     })
     .catch((err) => {
+      console.error("Error finding secretaries:", err);
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving question.",
+          err.message || "Some error occurred while retrieving secretaries.",
       });
     });
 };
