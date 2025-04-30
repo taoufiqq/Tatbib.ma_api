@@ -446,118 +446,202 @@ const getOrdonnanceByPatient = (req, res) => {
       });
     });
 };
+// const forgotPassword = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+
+//     if (!email) {
+//       return res.status(400).json({ message: "Email is required" });
+//     }
+
+//     // Find the medicine with this email
+//     const medicine = await Medicine.findOne({ email: email });
+
+//     if (!medicine) {
+//       // For security reasons, don't reveal that the email doesn't exist
+//       return res.status(200).json({
+//         message: "If this email is registered, password reset instructions will be sent."
+//       });
+//     }
+
+//     // Generate reset token
+//     const resetToken = crypto.randomBytes(32).toString('hex');
+//     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+//     // Save token and expiration to medicine document
+//     medicine.resetToken = hashedToken;
+//     medicine.resetTokenExpiration = Date.now() + 3600000; // Token valid for 1 hour
+//     await medicine.save();
+
+//     // Create reset URL
+//     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000/'}/reset-password/${resetToken}`;
+
+//     // Email setup
+//     const transporter = nodemailer.createTransport({
+//       service: process.env.EMAIL_SERVICE || 'gmail',
+//       auth: {
+//         user: process.env.EMAIL_USERNAME,
+//         pass: process.env.EMAIL_PASSWORD,
+//       },
+//     });
+
+//     // Email message
+//     const mailOptions = {
+//       from: process.env.EMAIL_FROM || 'noreply@yourdomain.com',
+//       to: medicine.email,
+//       subject: 'Password Reset Request',
+//       html: `
+//         <h1>You requested a password reset</h1>
+//         <p>Please click on the following link to reset your password:</p>
+//         <a href="${resetUrl}" target="_blank">Reset Password</a>
+//         <p>This link will expire in 1 hour.</p>
+//         <p>If you didn't request this, please ignore this email.</p>
+//       `,
+//     };
+
+//     // Send email
+//     await transporter.sendMail(mailOptions);
+
+//     res.status(200).json({
+//       message: "Password reset instructions have been sent to your email."
+//     });
+
+//   } catch (error) {
+//     console.error('Forgot password error:', error);
+//     res.status(500).json({
+//       message: "An error occurred while processing your request.",
+//       error: error.message
+//     });
+//   }
+// };
+// Reset password with token
+
 const forgotPassword = async (req, res) => {
   try {
+    console.log("Forgot password request received for:", req.body.email);
+
     const { email } = req.body;
-    
+
     if (!email) {
+      console.log("Email missing in request");
       return res.status(400).json({ message: "Email is required" });
     }
-    
-    // Find the medicine with this email
+
+    console.log("Checking for medicine with email:", email);
     const medicine = await Medicine.findOne({ email: email });
-    
+
     if (!medicine) {
-      // For security reasons, don't reveal that the email doesn't exist
-      return res.status(200).json({ 
-        message: "If this email is registered, password reset instructions will be sent." 
+      console.log(
+        "No medicine found with this email (intentionally not revealing)"
+      );
+      return res.status(200).json({
+        message:
+          "If this email is registered, password reset instructions will be sent.",
       });
     }
-    
-    // Generate reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    
-    // Save token and expiration to medicine document
+
+    console.log("Generating reset token for:", medicine._id);
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
     medicine.resetToken = hashedToken;
-    medicine.resetTokenExpiration = Date.now() + 3600000; // Token valid for 1 hour
+    medicine.resetTokenExpiration = Date.now() + 3600000;
     await medicine.save();
-    
-    // Create reset URL
-    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000/'}/reset-password/${resetToken}`;
-    
-    // Email setup
+    console.log("Reset token saved to database");
+
+    const resetUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:3000/"
+    }/reset-password/${resetToken}`;
+    console.log("Reset URL:", resetUrl);
+
+    // Verify email config exists
+    if (!process.env.EMAIL_USERNAME || !process.env.EMAIL_PASSWORD) {
+      console.error("Email credentials not configured!");
+      throw new Error("Email service not configured");
+    }
+
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || 'gmail',
+      service: process.env.EMAIL_SERVICE || "gmail",
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
     });
-    
-    // Email message
-    const mailOptions = {
-      from: process.env.EMAIL_FROM || 'noreply@yourdomain.com',
+
+    console.log("Attempting to send email to:", medicine.email);
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || "noreply@yourdomain.com",
       to: medicine.email,
-      subject: 'Password Reset Request',
+      subject: "Password Reset Request",
       html: `
-        <h1>You requested a password reset</h1>
-        <p>Please click on the following link to reset your password:</p>
-        <a href="${resetUrl}" target="_blank">Reset Password</a>
-        <p>This link will expire in 1 hour.</p>
-        <p>If you didn't request this, please ignore this email.</p>
-      `,
-    };
-    
-    // Send email
-    await transporter.sendMail(mailOptions);
-    
-    res.status(200).json({ 
-      message: "Password reset instructions have been sent to your email." 
+          <h1>You requested a password reset</h1>
+          <p>Please click on the following link to reset your password:</p>
+          <a href="${resetUrl}" target="_blank">Reset Password</a>
+          <p>This link will expire in 1 hour.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+        `,
     });
-    
+
+    console.log("Password reset email sent successfully");
+    res.status(200).json({
+      message: "Password reset instructions have been sent to your email.",
+    });
   } catch (error) {
-    console.error('Forgot password error:', error);
-    res.status(500).json({ 
+    console.error("Forgot password error:", error);
+    res.status(500).json({
       message: "An error occurred while processing your request.",
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 };
-// Reset password with token
+
 const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-    
+
     if (!token || !password) {
-      return res.status(400).json({ 
-        message: "Token and new password are required." 
+      return res.status(400).json({
+        message: "Token and new password are required.",
       });
     }
-    
+
     // Hash the token from the URL to compare with stored hash
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-    
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
     // Find medicine with this token and check if token is still valid
     const medicine = await Medicine.findOne({
       resetToken: hashedToken,
-      resetTokenExpiration: { $gt: Date.now() }
+      resetTokenExpiration: { $gt: Date.now() },
     });
-    
+
     if (!medicine) {
-      return res.status(400).json({ 
-        message: "Invalid or expired token. Please request a new password reset." 
+      return res.status(400).json({
+        message:
+          "Invalid or expired token. Please request a new password reset.",
       });
     }
-    
+
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     // Update medicine with new password and clear reset token fields
     medicine.password = hashedPassword;
     medicine.resetToken = undefined;
     medicine.resetTokenExpiration = undefined;
     await medicine.save();
-    
-    res.status(200).json({ 
-      message: "Password has been reset successfully." 
+
+    res.status(200).json({
+      message: "Password has been reset successfully.",
     });
-    
   } catch (error) {
-    console.error('Reset password error:', error);
-    res.status(500).json({ 
+    console.error("Reset password error:", error);
+    res.status(500).json({
       message: "An error occurred while resetting your password.",
-      error: error.message 
+      error: error.message,
     });
   }
 };
