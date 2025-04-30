@@ -474,7 +474,7 @@ const forgotPassword = async (req, res) => {
     await medicine.save();
     
     // Create reset URL
-    const resetUrl = `${process.env.FRONTEND_URL || 'https://tatbib-v3.vercel.app/'}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000/'}/reset-password/${resetToken}`;
     
     // Email setup
     const transporter = nodemailer.createTransport({
