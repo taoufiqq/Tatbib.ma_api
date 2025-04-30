@@ -24,6 +24,8 @@ router.put('/updateAvailabilityMedicine/:id',MedcineController.UpdateAvailabilit
 router.put('/manageSecretaryAccount/:id',MedcineController.ManageSecretaryAccount);
 router.delete('/deleteMedcine/:id',MedcineController.deleteMedcine);
 router.delete('/deleteSecretary/:id',MedcineController.deleteSecretary);
+router.post('/forgot-password', MedcineController.forgotPassword);
+router.post('/reset-password', MedcineController.resetPassword);
 
 module.exports = router;
 

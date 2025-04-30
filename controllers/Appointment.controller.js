@@ -140,53 +140,7 @@ const getAppointmentMedcine = async (req, res) => {
 };
 
 // -------------------------- get Appointment to Secretary ---------------------------
-// const getAppointmentSecretary = async (req, res) => {
-//   try {
-//     const appointments = await Appointment.find({
-//       loginMedcine: req.params.loginMedcine,
-//     })
-//       .populate({
-//         path: "patient",
-//         select: "_id lastName firstName email telephone",
-//       })
-//       .populate({
-//         path: "medicine",
-//         select: "_id name",
-//       })
-//       .sort({ dateTime: 1 })
-//       .lean();
 
-//     if (!appointments || appointments.length === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: `No appointments found for doctor with login ${req.params.loginMedcine}`,
-//         data: [],
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       count: appointments.length,
-//       data: appointments,
-//     });
-//   } catch (err) {
-//     console.error("Error in getAppointmentSecretary:", err);
-
-//     if (err.kind === "ObjectId") {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid login format",
-//         error: err.message,
-//       });
-//     }
-
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error while retrieving secretary appointments",
-//       error: err.message,
-//     });
-//   }
-// };
 const getAppointmentSecretary = (req, res) => {
   Appointment.find({ loginMedcine: req.params.loginMedcine })
     .populate("patient")
