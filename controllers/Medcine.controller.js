@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
-const jwt_decode = require("jwt-decode");
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+import jwt_decode from "jwt-decode";
 import crypto from "crypto";
 const { validationResult } = require("express-validator");
 const Medicine = require("../models/Medicine.model");
