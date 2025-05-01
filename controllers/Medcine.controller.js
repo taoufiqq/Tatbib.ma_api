@@ -1,13 +1,12 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
-import jwt_decode from "jwt-decode";
-import crypto from "crypto";
-import { validationResult } from "express-validator";
-import Medicine from "../models/Medicine.model.js";
-import Secretary from "../models/Secretary.model.js";
-import Ordonnance from "../models/Ordonnance.model.js";
-
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const jwt_decode = require("jwt-decode");
+const crypto =require("crypto");
+const { validationResult } = require("express-validator");
+const Medicine = require("../models/Medicine.model");
+const Secretary = require("../models/Secretary.model");
+const Ordonnance = require("../models/Ordonnance.model");
 
 //______________________get all Medcine____________________
 const getAllMedcine = (req, res) => {
