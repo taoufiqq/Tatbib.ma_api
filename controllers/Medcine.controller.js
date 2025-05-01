@@ -564,27 +564,53 @@ const forgotPassword = async (req, res) => {
       throw new Error("Email service not configured");
     }
 
+    // Create transporter with proper OAuth2 setup for Gmail
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || "gmail",
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        pass: process.env.EMAIL_PASSWORD, // Make sure this is an App Password if using Gmail
       },
+      tls: {
+        rejectUnauthorized: false // Only use in development
+      }
     });
 
+    // Verify transporter before sending
+    try {
+      await transporter.verify();
+      console.log("SMTP connection verified successfully");
+    } catch (verifyError) {
+      console.error("SMTP verification failed:", verifyError);
+      throw new Error(`Email service verification failed: ${verifyError.message}`);
+    }
+
     console.log("Attempting to send email to:", medicine.email);
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM || "noreply@yourdomain.com",
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || `"Password Reset" <${process.env.EMAIL_USERNAME}>`,
       to: medicine.email,
       subject: "Password Reset Request",
       html: `
-          <h1>You requested a password reset</h1>
-          <p>Please click on the following link to reset your password:</p>
-          <a href="${resetUrl}" target="_blank">Reset Password</a>
-          <p>This link will expire in 1 hour.</p>
-          <p>If you didn't request this, please ignore this email.</p>
-        `,
-    });
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
+          <h2 style="color: #333;">Password Reset Request</h2>
+          <p>Hello,</p>
+          <p>We received a request to reset your password. Please click on the button below to create a new password:</p>
+          <div style="text-align: center; margin: 25px 0;">
+            <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;" target="_blank">Reset Password</a>
+          </div>
+          <p>This link will expire in 1 hour for security reasons.</p>
+          <p>If you didn't request this password reset, please ignore this email or contact support if you have concerns.</p>
+          <hr style="border: none; border-top: 1px solid #e1e1e1; margin: 20px 0;">
+          <p style="color: #777; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
+        </div>
+      `,
+      text: `You requested a password reset. Please go to the following link to reset your password: ${resetUrl}. This link will expire in 1 hour.`,
+    };
+    
+    await transporter.sendMail(mailOptions);
 
     console.log("Password reset email sent successfully");
     res.status(200).json({
