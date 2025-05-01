@@ -4,9 +4,10 @@ import nodemailer from "nodemailer";
 import jwt_decode from "jwt-decode";
 import crypto from "crypto";
 import { validationResult } from "express-validator";
-const Medicine = require("../models/Medicine.model");
-const Secretary = require("../models/Secretary.model");
-const Ordonnance = require("../models/Ordonnance.model");
+import Medicine from "../models/Medicine.model.js";
+import Secretary from "../models/Secretary.model.js";
+import Ordonnance from "../models/Ordonnance.model.js";
+
 
 //______________________get all Medcine____________________
 const getAllMedcine = (req, res) => {
