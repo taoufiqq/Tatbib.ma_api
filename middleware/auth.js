@@ -1,4 +1,3 @@
-import Joi from 'joi';
 function verifyToken(req, res, next) {
   // Get auth header value
   const bearerHeader = req.headers['authoautrization'];
@@ -54,17 +53,5 @@ exports.isPatient = (req, res, next) => {
 
 
 }
-// export const forgotPasswordSchema = Joi.object({
-//   email: Joi.string().email().required()
-// });
 
-// export const resetPasswordSchema = Joi.object({
-//   password: Joi.string()
-//     .min(8)
-//     .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'))
-//     .required()
-//     .messages({
-//       'string.pattern.base': 'Password must contain uppercase, lowercase, number, and special character'
-//     })
-// });
 module.exports = verifyToken;

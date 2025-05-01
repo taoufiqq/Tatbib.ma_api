@@ -2,17 +2,7 @@ const express = require('express');
 const router = express.Router();
 const MedcineController = require('../controllers/Medcine.controller');
 
-import { validate } from '../middlewares/validate';
-import {
-  forgotPasswordSchema,
-  resetPasswordSchema
-} from '../validations/auth.validation';
-// Rate limiting (prevent brute force attacks)
-const resetLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 requests per windowMs
-    message: 'Too many requests from this IP, please try again later'
-  });
+
 router.post('/authentication',MedcineController.addMedcine);
 router.post('/createAccountSecretary',MedcineController.addSecretary);
 router.post('/addOrdonnance',MedcineController.addOrdonnance);
