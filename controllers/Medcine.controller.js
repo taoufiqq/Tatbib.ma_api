@@ -491,7 +491,7 @@ const getAllOrdonnance = (req, res) => {
 };
 // -------------------------- get Ordonnance By Medcine ---------------------------
 const getOrdonnanceByMedcine = (req, res) => {
-  Ordonnance.find({ medcine: req.params.id })
+  Ordonnance.find({ medicine: req.params.id })
     .populate("patient")
     .populate("medicine")
     .then((Ordonnance) => {
