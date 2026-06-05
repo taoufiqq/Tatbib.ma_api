@@ -2,11 +2,102 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt_decode = require("jwt-decode");
-const crypto = require('crypto');
+const crypto = require("crypto");
+// const { google } = require("googleapis");
+// const { OAuth2 } = google.auth;
+// const { OAuth2Client } = require('google-auth-library');
+ // This is incompatible with `import`.
+
 const { validationResult } = require("express-validator");
 const Medicine = require("../models/Medicine.model");
 const Secretary = require("../models/Secretary.model");
 const Ordonnance = require("../models/Ordonnance.model");
+
+const { Resend } = require('resend');
+console.log(process.env.RESEND_API_KEY);  // Should log the correct API key, not undefined
+const resendClient = new Resend(process.env.RESEND_API_KEY);
+
+
+
+const forgotPassword = async (req, res) => {
+  try {
+    console.log("Forgot password request received for:", req.body.email);
+
+    const { email } = req.body;
+
+    if (!email) {
+      console.log("Email missing in request");
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    console.log("Checking for medicine with email:", email);
+    const medicine = await Medicine.findOne({ email: email });
+
+    if (!medicine) {
+      console.log("No medicine found with this email (intentionally not revealing)");
+      return res.status(200).json({
+        message: "If this email is registered, password reset instructions will be sent.",
+      });
+    }
+
+    console.log("Generating reset token for:", medicine._id);
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    medicine.resetToken = hashedToken;
+    medicine.resetTokenExpiration = Date.now() + 3600000; // 1 hour expiration
+    await medicine.save();
+    console.log("Reset token saved to database");
+
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password/${resetToken}`;
+    console.log("Reset URL:", resetUrl);
+
+    // Send email using Resend
+    try {
+      const emailResponse = await resendClient.emails.send({
+        from: "TATBIB.ma <onboarding@resend.com>", // Ensure this email is verified in Resend
+        to: medicine.email,
+        subject: "Reset your password",
+        html: `
+          <p>Hello,</p>
+          <p>You requested a password reset. Click the link below to reset your password:</p>
+          <a href="${resetUrl}">${resetUrl}</a>
+          <p>If you did not request this, please ignore this email.</p>
+        `,
+      });
+
+      console.log("Resend email response:", emailResponse);
+    } catch (emailError) {
+      console.error("Failed to send email:", emailError);
+      return res.status(500).json({
+        message: "Failed to send reset email. Please try again later.",
+        error: emailError.message,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Password reset instructions have been sent to your email.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return res.status(500).json({
+      message: "An error occurred while processing your request.",
+      error: error.message,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+};
+
+
+
+
+
+
+
+
 
 //______________________get all Medcine____________________
 const getAllMedcine = (req, res) => {
@@ -379,14 +470,14 @@ const addOrdonnance = async (req, res) => {
   const dateTime = req.body.dateTime;
   const medicamment = req.body.medicamment;
   const patient = req.body.patient;
-  const medcine = req.body.medcine;
+  const medicine = req.body.medicine;
   const appointment = req.body.appointment;
 
   const OrdonnancePush = new Ordonnance({
     dateTime,
     medicamment,
     patient,
-    medcine,
+    medicine,
     appointment,
   });
   let result = await OrdonnancePush.save();
@@ -409,7 +500,7 @@ const getAllOrdonnance = (req, res) => {
 const getOrdonnanceByMedcine = (req, res) => {
   Ordonnance.find({ medcine: req.params.id })
     .populate("patient")
-    .populate("medcine")
+    .populate("medicine")
     .then((Ordonnance) => {
       res.status(200).json(Ordonnance);
     })
@@ -430,7 +521,7 @@ const getOrdonnanceByMedcine = (req, res) => {
 const getOrdonnanceByPatient = (req, res) => {
   Ordonnance.find({ patient: req.params.id })
     .populate("patient")
-    .populate("medcine")
+    .populate("medicine")
     .then((Ordonnance) => {
       res.status(200).json(Ordonnance);
     })
@@ -447,206 +538,151 @@ const getOrdonnanceByPatient = (req, res) => {
       });
     });
 };
+
 // const forgotPassword = async (req, res) => {
 //   try {
+//     console.log("Forgot password request received for:", req.body.email);
+
 //     const { email } = req.body;
 
 //     if (!email) {
+//       console.log("Email missing in request");
 //       return res.status(400).json({ message: "Email is required" });
 //     }
 
-//     // Find the medicine with this email
+//     console.log("Checking for medicine with email:", email);
 //     const medicine = await Medicine.findOne({ email: email });
 
 //     if (!medicine) {
-//       // For security reasons, don't reveal that the email doesn't exist
+//       console.log(
+//         "No medicine found with this email (intentionally not revealing)"
+//       );
 //       return res.status(200).json({
-//         message: "If this email is registered, password reset instructions will be sent."
+//         message:
+//           "If this email is registered, password reset instructions will be sent.",
 //       });
 //     }
 
-//     // Generate reset token
-//     const resetToken = crypto.randomBytes(32).toString('hex');
-//     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+//     console.log("Generating reset token for:", medicine._id);
+//     const resetToken = crypto.randomBytes(32).toString("hex");
+//     const hashedToken = crypto
+//       .createHash("sha256")
+//       .update(resetToken)
+//       .digest("hex");
 
-//     // Save token and expiration to medicine document
 //     medicine.resetToken = hashedToken;
-//     medicine.resetTokenExpiration = Date.now() + 3600000; // Token valid for 1 hour
+//     medicine.resetTokenExpiration = Date.now() + 3600000;
 //     await medicine.save();
+//     console.log("Reset token saved to database");
 
-//     // Create reset URL
-//     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000/'}/reset-password/${resetToken}`;
+//     const resetUrl = `${
+//       process.env.FRONTEND_URL || "http://localhost:3000/"
+//     }/reset-password/${resetToken}`;
+//     console.log("Reset URL:", resetUrl);
 
-//     // Email setup
-//     const transporter = nodemailer.createTransport({
-//       service: process.env.EMAIL_SERVICE || 'gmail',
-//       auth: {
-//         user: process.env.EMAIL_USERNAME,
-//         pass: process.env.EMAIL_PASSWORD,
-//       },
-//     });
+//     // OPTION 1: Use OAuth2 authentication with Gmail
+//     if (process.env.EMAIL_SERVICE === 'gmail-oauth2') {
+//       try {
+//         // Create OAuth2 client with the credentials from .env
+//         const oauth2Client = new OAuth2Client(
+//           process.env.GMAIL_CLIENT_ID,
+//           process.env.GMAIL_CLIENT_SECRET,
+//           process.env.GMAIL_REDIRECT_URL
+//         );
 
-//     // Email message
-//     const mailOptions = {
-//       from: process.env.EMAIL_FROM || 'noreply@yourdomain.com',
-//       to: medicine.email,
-//       subject: 'Password Reset Request',
-//       html: `
-//         <h1>You requested a password reset</h1>
-//         <p>Please click on the following link to reset your password:</p>
-//         <a href="${resetUrl}" target="_blank">Reset Password</a>
-//         <p>This link will expire in 1 hour.</p>
-//         <p>If you didn't request this, please ignore this email.</p>
-//       `,
-//     };
+//         // Set credentials using the refresh token
+//         oauth2Client.setCredentials({
+//           refresh_token: process.env.GMAIL_REFRESH_TOKEN
+//         });
 
-//     // Send email
-//     await transporter.sendMail(mailOptions);
+//         // Get a new access token
+//         const accessTokenResponse = await oauth2Client.getAccessToken();
+//         const accessToken = accessTokenResponse.token;
+
+//         if (!accessToken) {
+//           throw new Error("Failed to obtain access token");
+//         }
+
+//         // Create the transporter with OAuth2
+//         const transporter = nodemailer.createTransport({
+//           service: 'gmail',
+//           auth: {
+//             type: 'OAuth2',
+//             user: process.env.EMAIL_USERNAME,
+//             clientId: process.env.GMAIL_CLIENT_ID,
+//             clientSecret: process.env.GMAIL_CLIENT_SECRET,
+//             refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+//             accessToken: accessToken
+//           }
+//         });
+
+//         // Send mail using OAuth2 credentials
+//         await sendEmail(transporter, medicine.email, resetUrl);
+//       } catch (oauthError) {
+//         console.error("OAuth2 error:", oauthError);
+//         throw new Error(`OAuth2 authentication failed: ${oauthError.message}`);
+//       }
+//     }
 
 //     res.status(200).json({
-//       message: "Password reset instructions have been sent to your email."
+//       message: "Password reset instructions have been sent to your email.",
 //     });
-
 //   } catch (error) {
-//     console.error('Forgot password error:', error);
+//     console.error("Forgot password error:", error);
 //     res.status(500).json({
 //       message: "An error occurred while processing your request.",
-//       error: error.message
+//       error: error.message,
+//       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
 //     });
 //   }
 // };
-// Reset password with token
-
-const forgotPassword = async (req, res) => {
-  try {
-    console.log("Forgot password request received for:", req.body.email);
-
-    const { email } = req.body;
-
-    if (!email) {
-      console.log("Email missing in request");
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    console.log("Checking for medicine with email:", email);
-    const medicine = await Medicine.findOne({ email: email });
-
-    if (!medicine) {
-      console.log(
-        "No medicine found with this email (intentionally not revealing)"
-      );
-      return res.status(200).json({
-        message:
-          "If this email is registered, password reset instructions will be sent.",
-      });
-    }
-
-    console.log("Generating reset token for:", medicine._id);
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
-
-    medicine.resetToken = hashedToken;
-    medicine.resetTokenExpiration = Date.now() + 3600000;
-    await medicine.save();
-    console.log("Reset token saved to database");
-
-    const resetUrl = `${
-      process.env.FRONTEND_URL || "http://localhost:3000/"
-    }/reset-password/${resetToken}`;
-    console.log("Reset URL:", resetUrl);
-
-    // OPTION 1: Use OAuth2 authentication with Gmail
-    if (process.env.EMAIL_SERVICE === 'gmail-oauth2') {
-      // Requires setting up OAuth2 credentials in Google Cloud Console
-      const oauth2Client = new OAuth2(
-        process.env.GMAIL_CLIENT_ID,
-        process.env.GMAIL_CLIENT_SECRET,
-        process.env.GMAIL_REDIRECT_URL
-      );
-      
-      oauth2Client.setCredentials({
-        refresh_token: process.env.GMAIL_REFRESH_TOKEN
-      });
-      
-      const accessToken = await oauth2Client.getAccessToken();
-      
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          type: 'OAuth2',
-          user: process.env.EMAIL_USERNAME,
-          clientId: process.env.GMAIL_CLIENT_ID,
-          clientSecret: process.env.GMAIL_CLIENT_SECRET,
-          refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-          accessToken: accessToken.token
-        }
-      });
-      
-      // Send mail using OAuth2 credentials
-      await sendEmail(transporter, medicine.email, resetUrl);
-    }
-
-    res.status(200).json({
-      message: "Password reset instructions have been sent to your email.",
-    });
-  } catch (error) {
-    console.error("Forgot password error:", error);
-    res.status(500).json({
-      message: "An error occurred while processing your request.",
-      error: error.message,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    });
-  }
-};
 
 // Helper function to send email with proper template
-const sendEmail = async (transporter, recipientEmail, resetUrl) => {
-  try {
-    console.log("Attempting to send email to:", recipientEmail);
-    
-    const mailOptions = {
-      from: process.env.EMAIL_FROM || `"Password Reset" <${process.env.EMAIL_USERNAME}>`,
-      to: recipientEmail,
-      subject: "Password Reset Request",
-      html: getEmailTemplate(resetUrl),
-      text: `You requested a password reset. Please go to the following link to reset your password: ${resetUrl}. This link will expire in 1 hour.`,
-    };
-    
-    await transporter.sendMail(mailOptions);
-    console.log("Password reset email sent successfully");
-  } catch (error) {
-    console.error("Email sending failed:", error);
-    throw new Error(`Email sending failed: ${error.message}`);
-  }
-};
+// const sendEmail = async (transporter, recipientEmail, resetUrl) => {
+//   try {
+//     console.log("Attempting to send email to:", recipientEmail);
+
+//     const mailOptions = {
+//       from: process.env.EMAIL_FROM || `"Password Reset" <${process.env.EMAIL_USERNAME}>`,
+//       to: recipientEmail,
+//       subject: "Password Reset Request",
+//       html: getEmailTemplate(resetUrl),
+//       text: `You requested a password reset. Please go to the following link to reset your password: ${resetUrl}. This link will expire in 1 hour.`,
+//     };
+
+//     const info = await transporter.sendMail(mailOptions);
+//     console.log("Password reset email sent successfully:", info.messageId);
+//     return info;
+//   } catch (error) {
+//     console.error("Email sending failed:", error);
+//     throw new Error(`Email sending failed: ${error.message}`);
+//   }
+// };
 
 // Email template function
-const getEmailTemplate = (resetUrl) => {
-  return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
-      <h2 style="color: #333;">Password Reset Request</h2>
-      <p>Hello,</p>
-      <p>We received a request to reset your password. Please click on the button below to create a new password:</p>
-      <div style="text-align: center; margin: 25px 0;">
-        <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;" target="_blank">Reset Password</a>
-      </div>
-      <p>This link will expire in 1 hour for security reasons.</p>
-      <p>If you didn't request this password reset, please ignore this email or contact support if you have concerns.</p>
-      <hr style="border: none; border-top: 1px solid #e1e1e1; margin: 20px 0;">
-      <p style="color: #777; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
-    </div>
-  `;
-};
+// const getEmailTemplate = (resetUrl) => {
+//   return `
+//     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
+//       <h2 style="color: #333;">Password Reset Request</h2>
+//       <p>Hello,</p>
+//       <p>We received a request to reset your password. Please click on the button below to create a new password:</p>
+//       <div style="text-align: center; margin: 25px 0;">
+//         <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;" target="_blank">Reset Password</a>
+//       </div>
+//       <p>This link will expire in 1 hour for security reasons.</p>
+//       <p>If you didn't request this password reset, please ignore this email or contact support if you have concerns.</p>
+//       <hr style="border: none; border-top: 1px solid #e1e1e1; margin: 20px 0;">
+//       <p style="color: #777; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
+//     </div>
+//   `;
+// };
 
-// Email template function
 
+// export default forgotPassword;
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
-      const { password } = req.body;
+    const { password } = req.body;
 
     if (!token || !password) {
       return res.status(400).json({

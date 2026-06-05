@@ -13,7 +13,7 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200, // Fix typo here
 };
-
+require('dotenv').config();
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

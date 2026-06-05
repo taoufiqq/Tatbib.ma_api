@@ -17,9 +17,9 @@ const Ordonnance = new Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Patient'
     },
-    medcine :{
+    medicine :{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Medcine'
+        ref: 'Medicine'
     },
 
 },
