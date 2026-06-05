@@ -409,7 +409,7 @@ const loginMedcine = (req, res) => {
 
               // Normalize the role before sending
               const normalizedRole =
-                medicine.role.toLowerCase() === "medcine"
+                medicine.role.toLowerCase() === "medicine"
                   ? "medicine"
                   : medicine.role.toLowerCase();
 
