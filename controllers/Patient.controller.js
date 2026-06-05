@@ -1,7 +1,7 @@
 const Patient = require("../models/Patient.model");
 const Appointment = require("../models/Appointment.model");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt_decode = require("jwt-decode");
 
@@ -24,7 +24,7 @@ const getAllPatient = (req, res) => {
 //_______________________ Patient authentication________________________
 
 const addPatient = async (req, res) => {
-  bcrypt.hash(req.body.password, 10, function (err, hashPassword) {
+  bcryptjs.hash(req.body.password, 10, function (err, hashPassword) {
     if (err) {
       res.json({
         error: err,
@@ -106,7 +106,7 @@ const loginPatient = (req, res) => {
   })
     .then((patient) => {
       if (patient) {
-        bcrypt.compare(password, patient.password, function (err, result) {
+        bcryptjs.compare(password, patient.password, function (err, result) {
           if (err) {
             return res.status(500).json({
               error: err,
@@ -166,7 +166,7 @@ const updatePatient = (req, res) => {
       age: req.body.age,
       telephone: req.body.telephone,
       login: req.body.login,
-    }
+    },
   )
     .then(() => res.status(201).json("Patient updated successfully"))
     .catch((err) => res.status(400).json("Error :" + err));

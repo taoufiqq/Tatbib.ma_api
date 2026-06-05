@@ -1,23 +1,21 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt_decode = require("jwt-decode");
 const crypto = require("crypto");
 // const { google } = require("googleapis");
 // const { OAuth2 } = google.auth;
 // const { OAuth2Client } = require('google-auth-library');
- // This is incompatible with `import`.
+// This is incompatible with `import`.
 
 const { validationResult } = require("express-validator");
 const Medicine = require("../models/Medicine.model");
 const Secretary = require("../models/Secretary.model");
 const Ordonnance = require("../models/Ordonnance.model");
 
-const { Resend } = require('resend');
-console.log(process.env.RESEND_API_KEY);  // Should log the correct API key, not undefined
+const { Resend } = require("resend");
+console.log(process.env.RESEND_API_KEY); // Should log the correct API key, not undefined
 const resendClient = new Resend(process.env.RESEND_API_KEY);
-
-
 
 const forgotPassword = async (req, res) => {
   try {
@@ -34,9 +32,12 @@ const forgotPassword = async (req, res) => {
     const medicine = await Medicine.findOne({ email: email });
 
     if (!medicine) {
-      console.log("No medicine found with this email (intentionally not revealing)");
+      console.log(
+        "No medicine found with this email (intentionally not revealing)",
+      );
       return res.status(200).json({
-        message: "If this email is registered, password reset instructions will be sent.",
+        message:
+          "If this email is registered, password reset instructions will be sent.",
       });
     }
 
@@ -90,14 +91,6 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
 
 //______________________get all Medcine____________________
 const getAllMedcine = (req, res) => {
@@ -234,7 +227,7 @@ const addSecretary = async (req, res) => {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newSecretary = new Secretary({
       fullName,
@@ -290,7 +283,7 @@ const UpdateAvailabilityMedicine = (req, res) => {
     { _id: req.params.id },
     {
       availability: req.body.availability,
-    }
+    },
   )
     .then(() => res.status(201).json("availability updated successfully"))
     .catch((err) => res.status(400).json("Error :" + err));
@@ -318,7 +311,7 @@ const deleteMedcine = (req, res) => {
 
 //_______________________ Medcine authentication________________________
 const addMedcine = async (req, res) => {
-  bcrypt.hash(req.body.password, 10, function (err, hashPassword) {
+  bcryptjs.hash(req.body.password, 10, function (err, hashPassword) {
     if (err) {
       res.json({ error: err });
     }
@@ -393,7 +386,7 @@ const loginMedcine = (req, res) => {
   Medicine.findOne({ login: login })
     .then((medicine) => {
       if (medicine) {
-        bcrypt.compare(password, medicine.password, function (err, result) {
+        bcryptjs.compare(password, medicine.password, function (err, result) {
           if (err) {
             return res.status(500).json({
               error: err,
@@ -677,7 +670,6 @@ const getOrdonnanceByPatient = (req, res) => {
 //   `;
 // };
 
-
 // export default forgotPassword;
 const resetPassword = async (req, res) => {
   try {
@@ -707,7 +699,7 @@ const resetPassword = async (req, res) => {
     }
 
     // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     // Update medicine with new password and clear reset token fields
     medicine.password = hashedPassword;
