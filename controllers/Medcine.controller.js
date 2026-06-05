@@ -14,8 +14,19 @@ const Secretary = require("../models/Secretary.model");
 const Ordonnance = require("../models/Ordonnance.model");
 
 const { Resend } = require("resend");
-console.log(process.env.RESEND_API_KEY); // Should log the correct API key, not undefined
-const resendClient = new Resend(process.env.RESEND_API_KEY);
+let resendClient;
+
+const getResendClient = () => {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+
+  return resendClient;
+};
 
 const forgotPassword = async (req, res) => {
   try {
@@ -58,7 +69,7 @@ const forgotPassword = async (req, res) => {
 
     // Send email using Resend
     try {
-      const emailResponse = await resendClient.emails.send({
+      const emailResponse = await getResendClient().emails.send({
         from: "TATBIB.ma <onboarding@resend.com>", // Ensure this email is verified in Resend
         to: medicine.email,
         subject: "Reset your password",
